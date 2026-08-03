@@ -120,8 +120,6 @@ fabric.properties
 .phpunit.result.cache
 .phpunit.cache
 
-
-
 # PHPUnit
 /app/phpunit.xml
 /phpunit.xml
