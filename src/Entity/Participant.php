@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
@@ -19,7 +17,7 @@ class Participant
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $prenom = null;
+    private ?string $pr�enom = null;
 
     #[ORM\Column(length: 10)]
     private ?string $telephone = null;
@@ -51,6 +49,10 @@ class Participant
         $this->sortiesOrganisees = new ArrayCollection();
     }
 
+    #[ORM\ManyToOne(inversedBy: 'participants')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $campus = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -68,14 +70,14 @@ class Participant
         return $this;
     }
 
-    public function getPrenom(): ?string
+    public function getPr�enom(): ?string
     {
-        return $this->prenom;
+        return $this->pr�enom;
     }
 
-    public function setPrenom(string $prenom): static
+    public function setPr�enom(string $pr�enom): static
     {
-        $this->prenom = $prenom;
+        $this->pr�enom = $pr�enom;
 
         return $this;
     }
@@ -124,6 +126,18 @@ class Participant
     public function setActif(bool $actif): static
     {
         $this->actif = $actif;
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): static
+    {
+        $this->campus = $campus;
 
         return $this;
     }

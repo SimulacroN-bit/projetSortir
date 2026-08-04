@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use App\Enum\Etat;
 use App\Repository\SortieRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -56,6 +54,10 @@ class Sortie
     {
         $this->participants = new ArrayCollection();
     }
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $campus = null;
 
     public function getId(): ?int
     {
@@ -135,7 +137,7 @@ class Sortie
     }
 
     /**
-     * @return Etat|null : Etat
+     * @return Etat
      */
     public function getEtat(): ?Etat
     {
@@ -145,6 +147,18 @@ class Sortie
     public function setEtat(Etat $etat): static
     {
         $this->etat = $etat;
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): static
+    {
+        $this->campus = $campus;
+
         return $this;
     }
 
