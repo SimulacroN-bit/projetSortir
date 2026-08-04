@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Enum\Etat;
 use App\Repository\SortieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -137,7 +139,7 @@ class Sortie
     }
 
     /**
-     * @return Etat
+     * @return Etat|null
      */
     public function getEtat(): ?Etat
     {

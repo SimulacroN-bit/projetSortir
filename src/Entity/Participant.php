@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
@@ -17,7 +19,7 @@ class Participant
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $pr�enom = null;
+    private ?string $prenom = null;
 
     #[ORM\Column(length: 10)]
     private ?string $telephone = null;
@@ -70,14 +72,14 @@ class Participant
         return $this;
     }
 
-    public function getPr�enom(): ?string
+    public function getPrenom(): ?string
     {
-        return $this->pr�enom;
+        return $this->prenom;
     }
 
-    public function setPr�enom(string $pr�enom): static
+    public function setPrenom(string $prenom): static
     {
-        $this->pr�enom = $pr�enom;
+        $this->prenom = $prenom;
 
         return $this;
     }
