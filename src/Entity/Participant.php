@@ -17,7 +17,7 @@ class Participant
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $prÃenom = null;
+    private ?string $prenom = null;
 
     #[ORM\Column(length: 10)]
     private ?string $telephone = null;
@@ -52,14 +52,14 @@ class Participant
         return $this;
     }
 
-    public function getPrÃenom(): ?string
+    public function getPrenom(): ?string
     {
-        return $this->prÃenom;
+        return $this->prenom;
     }
 
-    public function setPrÃenom(string $prÃenom): static
+    public function setPrenom(string $prenom): static
     {
-        $this->prÃenom = $prÃenom;
+        $this->prenom = $prenom;
 
         return $this;
     }
