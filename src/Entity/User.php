@@ -38,7 +38,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     #[Assert\NotBlank(message: 'Password required')]
-    #[Assert\Length(min: 8, minMessage: 'Password min 8 chars')]
     private ?string $password = null;
 
     public function getId(): ?int
