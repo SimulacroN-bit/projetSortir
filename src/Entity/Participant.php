@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
@@ -30,6 +32,24 @@ class Participant
 
     #[ORM\Column]
     private ?bool $actif = null;
+
+    /**
+     * @var Collection<int, Sortie>
+     */
+    #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'participants')]
+    private Collection $sorties;
+
+    /**
+     * @var Collection<int, Sortie>
+     */
+    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'organisateur', orphanRemoval: true)]
+    private Collection $sortiesOrganisees;
+
+    public function __construct()
+    {
+        $this->sorties = new ArrayCollection();
+        $this->sortiesOrganisees = new ArrayCollection();
+    }
 
     #[ORM\ManyToOne(inversedBy: 'participants')]
     #[ORM\JoinColumn(nullable: false)]
@@ -120,6 +140,63 @@ class Participant
     public function setCampus(?Campus $campus): static
     {
         $this->campus = $campus;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSorties(): Collection
+    {
+        return $this->sorties;
+    }
+
+    public function addSortie(Sortie $sortie): static
+    {
+        if (!$this->sorties->contains($sortie)) {
+            $this->sorties->add($sortie);
+            $sortie->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSortie(Sortie $sortie): static
+    {
+        if ($this->sorties->removeElement($sortie)) {
+            $sortie->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSortiesOrganisees(): Collection
+    {
+        return $this->sortiesOrganisees;
+    }
+
+    public function addSortiesOrganisee(Sortie $sortiesOrganisee): static
+    {
+        if (!$this->sortiesOrganisees->contains($sortiesOrganisee)) {
+            $this->sortiesOrganisees->add($sortiesOrganisee);
+            $sortiesOrganisee->setOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSortiesOrganisee(Sortie $sortiesOrganisee): static
+    {
+        if ($this->sortiesOrganisees->removeElement($sortiesOrganisee)) {
+            // set the owning side to null (unless already changed)
+            if ($sortiesOrganisee->getOrganisateur() === $this) {
+                $sortiesOrganisee->setOrganisateur(null);
+            }
+        }
 
         return $this;
     }
