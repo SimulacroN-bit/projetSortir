@@ -93,5 +93,4 @@ class Lieu
 
         return $this;
     }
-
 }
