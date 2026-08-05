@@ -21,26 +21,7 @@
     </head>
     <body>
     {% block header %}
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">
-                    <img src="/img/logo.png" alt="Logo" height="80">
-                    Sortir.com
-                </a>
-            </div>
-            <div class="ms-auto d-flex gap-2">
-                {% if app.user %}
-                    <a href="{{ path('app_user') }}" class="btn btn-lm btn-info">Administration</a>
-                    <a href="{{ path('app_user') }}" class="btn btn-lm btn-info">Accueil</a>
-                    <a href="{{ path('app_user') }}" class="btn btn-lm btn-info">Mon Profil</a>
-                {% endif %}
-                {% if app.user %}
-                    <a href="{{ path('app_logout') }}" class="btn btn-lm btn-info">Se déconnecter</a>
-                {% else %}
-                    <a href="{{ path('app_login') }}" class="btn btn-lm btn-info">Login</a>
-                {% endif %}
-            </div>
-        </nav>
+        {% include '_navbar.html.twig' %}
     {% endblock %}
         {% block body %}
 
