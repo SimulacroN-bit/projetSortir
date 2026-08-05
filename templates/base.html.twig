@@ -20,6 +20,11 @@
         {% endif %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+    {% block header %}
+        {% include '_navbar.html.twig' %}
+    {% endblock %}
+        {% block body %}
+
+        {% endblock %}
     </body>
 </html>

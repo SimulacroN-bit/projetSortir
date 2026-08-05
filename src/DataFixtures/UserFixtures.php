@@ -2,19 +2,24 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture
 {
+    public function __construct(private UserPasswordHasherInterface $passwordHasher)
+    {
+    }
+
     public function load(ObjectManager $manager): void
     {
-        $faker = \Faker\Factory::create('fr_FR');
-        // création d'un administrateur
         $userAdmin = new User();
         $userAdmin->setUsername('admin');
         $userAdmin->setRoles(['ROLE_ADMIN']);
-        $userAdmin->setPassword('123456');
+        $hashedPassword = $this->passwordHasher->hashPassword($userAdmin, '12345');
+        $userAdmin->setPassword($hashedPassword);
         $manager->persist($userAdmin);
         $manager->flush();
     }

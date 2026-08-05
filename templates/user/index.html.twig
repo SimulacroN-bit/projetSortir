@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    {% if app.user %}
+        <div class="text-center">
+       <h1>Hello {{ app.user.username }} !</h1>
+        </div>
+    {% else %}
+    <div class="text-center">
+        <h1>Hello Invite !</h1>
+    </div>
+    {% endif %}
+</div>
+
+    <div>
+        <nav class="navbar navbar-light bg-light d-flex justify-content-between">
+            <form class="form-inline">
+                <p>Le nom de la sortie contient</p>
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            </form>
+            <div class="d-flex">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault1">
+                    <label class="form-check-label" for="flexCheckDefault1">
+                        Sorties dont je suis l'organisateur/rice
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault2">
+                    <label class="form-check-label" for="flexCheckDefault2">
+                        Sorties auxquelles je suis inscrit/e
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault3">
+                    <label class="form-check-label" for="flexCheckDefault3">
+                        Sorties auxquelles je ne suis pas inscrit/e
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault4">
+                    <label class="form-check-label" for="flexCheckDefault4">
+                        Sorties terminées
+                    </label>
+                </div>
+            </div>
+            <button class="btn btn-outline-success" type="submit">Rechercher</button>
+        </nav>
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nom de la sortie</th>
+                <th scope="col">Date de la sortie</th>
+                <th scope="col">Clôture</th>
+                <th scope="col">Inscrits/Places</th>
+                <th scope="col">Etat</th>
+                <th scope="col">Inscrit</th>
+                <th scope="col">Organisateur</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td>...</td>
+                <td>...</td>
+                <td>...</td>
+            </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-lg btn-outline-secondary" type="submit">Créer une sortie</button>
+    </div>
+{% endblock %}
