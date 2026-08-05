@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Mon profil</h2>
+
+    {{ form_start(profilForm) }}
+    {{ form_row(profilForm.campus) }}
+    {{ form_row(profilForm.username) }}
+    {{ form_row(profilForm.prenom) }}
+    {{ form_row(profilForm.nom) }}
+    {{ form_row(profilForm.telephone) }}
+    {{ form_row(profilForm.mail) }}
+    {{ form_row(profilForm.password) }}
+    {{ form_row(profilForm.password_confirmation) }}
+
+    <button class="btn btn-sm btn-primary">Enregistrer</button>
+    {{ form_end(wishForm) }}
+{% endblock %}
+
+{% block title %}Mon profil | {{ parent() }}{% endblock %}
