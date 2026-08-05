@@ -21,38 +21,60 @@
 </div>
 
     <div>
-        <nav class="navbar navbar-light bg-light d-flex justify-content-between">
-            <form class="form-inline">
-                <p>Le nom de la sortie contient</p>
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            </form>
-            <div class="d-flex">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault1">
-                    <label class="form-check-label" for="flexCheckDefault1">
-                        Sorties dont je suis l'organisateur/rice
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault2">
-                    <label class="form-check-label" for="flexCheckDefault2">
-                        Sorties auxquelles je suis inscrit/e
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault3">
-                    <label class="form-check-label" for="flexCheckDefault3">
-                        Sorties auxquelles je ne suis pas inscrit/e
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault4">
-                    <label class="form-check-label" for="flexCheckDefault4">
-                        Sorties terminées
-                    </label>
-                </div>
+        <nav class="navbar navbar-light bg-light">
+            <div class="container-fluid">
+                <h4 class="mb-3">Filtrer les sorties</h4>
+                <form class="w-100">
+                    <div class="row g-3">
+                        <!-- Left Column -->
+                        <div class="col-md-4">
+                            <p>Campus</p>
+                            <select class="form-select" aria-label="Choisis un campus">
+                                <option selected>Choisis un campus</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                            <p class="mt-2">Le nom de la sortie contient</p>
+                            <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                            <p class="mt-2">Entre ... et ....</p>
+                        </div>
+
+                        <!-- Middle Column: Checkboxes -->
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault1">
+                                <label class="form-check-label" for="flexCheckDefault1">
+                                    Sorties dont je suis l'organisateur/rice
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault2">
+                                <label class="form-check-label" for="flexCheckDefault2">
+                                    Sorties auxquelles je suis inscrit/e
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault3">
+                                <label class="form-check-label" for="flexCheckDefault3">
+                                    Sorties auxquelles je ne suis pas inscrit/e
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault4">
+                                <label class="form-check-label" for="flexCheckDefault4">
+                                    Sorties terminées
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Search Button -->
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button class="btn btn-outline-success w-100" type="submit">Rechercher</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <button class="btn btn-outline-success" type="submit">Rechercher</button>
         </nav>
         <table class="table">
             <thead class="thead-dark">
