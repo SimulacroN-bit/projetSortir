@@ -26,23 +26,31 @@
                 <h4 class="mb-3">Filtrer les sorties</h4>
                 <form class="w-100">
                     <div class="row g-3">
-                        <!-- Left Column -->
                         <div class="col-md-4">
-                            <p>Campus</p>
-                            <select class="form-select" aria-label="Choisis un campus">
-                                <option selected>Choisis un campus</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </select>
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="campus" class="form-label mb-0">Campus</label>
+                                <select id="campus" class="form-select" aria-label="Choisis un campus">
+                                    <option selected>Choisis un campus</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
                             <p class="mt-2">Le nom de la sortie contient</p>
                             <input class="form-control" type="search" placeholder="Search" aria-label="Search">
-                            <p class="mt-2">Entre</p>
-                            <p... et ....</p>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                            <label for="dateDebut" class="form-label mt-2">Entre</label>
+                            <input type="date" class="form-control" id="dateDebut" name="dateDebut">
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                            <label for="dateDebut" class="form-label mt-2">et</label>
+                            <input type="date" class="form-control" id="dateDebut" name="dateDebut">
+                            </div>
                         </div>
 
-                        <!-- Middle Column: Checkboxes -->
-                        <div class="col-md-4">
+                        <div class="col-md-4 align-items-center">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault1">
                                 <label class="form-check-label" for="flexCheckDefault1">
@@ -69,8 +77,7 @@
                             </div>
                         </div>
 
-                        <!-- Right Column: Search Button -->
-                        <div class="col-md-4 d-flex align-items-end">
+                        <div class="col-md-4 d-flex align-items-center">
                             <button class="btn btn-outline-success w-100" type="submit">Rechercher</button>
                         </div>
                     </div>
@@ -80,7 +87,6 @@
         <table class="table">
             <thead class="thead-dark">
             <tr>
-                <th scope="col">#</th>
                 <th scope="col">Nom de la sortie</th>
                 <th scope="col">Date de la sortie</th>
                 <th scope="col">Clôture</th>
@@ -92,24 +98,24 @@
             </tr>
             </thead>
             <tbody>
+            {% for sortie in sorties %}
             <tr>
-                <th scope="row">1</th>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
+                <td>{{ sortie.nom }}</td>
+                <td>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</td>
+                <td>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
+                <td>{{ sortie.participants|length }}/{{ sortie.nbInscriptionMax }}</td>
+                <td>{{ sortie.etat.value }}</td>
+                <td>
+                    {% if app.user and sortie.participants.contains(app.user) %}
+                        X
+                    {% endif %}
+                </td>
+                <td>{{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary">Détails</button>
+                </td>
             </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
+            {% endfor %}
             </tbody>
         </table>
         <button class="btn btn-lg btn-outline-secondary" type="submit">Créer une sortie</button>
