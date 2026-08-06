@@ -6,8 +6,10 @@
         </a>
     </div>
     <div class="ms-auto d-flex gap-2">
-        {% if app.user %}
+        {% if is_granted('ROLE_ADMIN') %}
             <a href="{{ path('app_user') }}" class="btn btn-lm btn-info">Administration</a>
+        {% endif %}
+        {% if app.user %}
             <a href="{{ path('app_user') }}" class="btn btn-lm btn-info">Accueil</a>
             <a href="{{ path('app_user') }}" class="btn btn-lm btn-info">Mon Profil</a>
         {% endif %}
