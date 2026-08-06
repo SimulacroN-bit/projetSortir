@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Sortie;
 use App\Repository\CampusRepository;
 use App\Repository\SortieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,6 +29,14 @@ final class SortieController extends AbstractController
             'sorties' => $sorties,
             'campus' => $campus,
             'selectedCampusId' => $campusId,
+        ]);
+    }
+
+    #[Route('/sortie/{id}', name: 'app_sortie_detail')]
+    public function detail(Sortie $sortie): Response
+    {
+        return $this->render('sortie/detail.html.twig', [
+            'sortie' => $sortie,
         ]);
     }
 }
