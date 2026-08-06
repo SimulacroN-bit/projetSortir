@@ -28,7 +28,7 @@ class Participant
     #[ORM\Column(length: 10)]
     private ?string $telephone = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     #[Assert\NotBlank(message: 'L\'email est obligatoire.')]
     #[Assert\Email(message: 'L\'email n\'est pas valide.')]
     private ?string $mail = null;

@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ sortie.nom }} - Afficher une sortie{% endblock %}
+
+{% block body %}
+<div class="container my-4">
+    <div class="card">
+        <div class="card-header">
+            <h1 class="text-center"><strong>Afficher une sortie</strong></h1>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p><strong>Nom de la sortie : </strong> {{ sortie.nom }}</p>
+                    <p><strong>Date et heure de la sortie : </strong> {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</p>
+                    <p><strong>Date limite d'inscription : </strong> {{ sortie.dateLimiteInscription|date('d/m/Y') }}</p>
+                    <p><strong>Nombre de places : </strong> {{ sortie.participants|length }}/{{ sortie.nbInscriptionMax }}</p>
+                    <p><strong>Durée (en minutes) : </strong> {{ sortie.duree|date('H') * 60 + sortie.duree|date('i') }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Campus : </strong> {{ sortie.campus.nom }}</p>
+                    <p><strong>Ville : </strong> {{ sortie.lieu.ville.nom }}</p>
+                    <p><strong>Lieu : </strong> {{ sortie.lieu.nom }}</p>
+                    <p><strong>Rue : </strong> {{ sortie.lieu.rue }}</p>
+                    <p><strong>Code postal : </strong> {{ sortie.lieu.ville.codePostal }}</p>
+                    <p><strong>Latitude / Longitude : </strong> {{ sortie.lieu.latitude }}/{{ sortie.lieu.longitude }}</p>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="d-flex justify-content-between">
+                    <h5>Descriptions et infos</h5>
+                    <p>{{ sortie.infosSortie }}</p>
+                </div>
+            </div>
+
+            {% if sortie.participants|length > 0 %}
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <h5>Liste des participants inscrits</h5>
+                    <ul class="list-group">
+                        {% for participant in sortie.participants %}
+                            <li class="list-group-item">{{ participant.prenom }} {{ participant.nom }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+            <a href="{{ path('app_user') }}" class="btn btn-secondary mb-3">Retour</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
