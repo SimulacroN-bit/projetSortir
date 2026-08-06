@@ -10,16 +10,20 @@ class VilleFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $faker = \Faker\Factory::create('fr_FR');
+        $villeData = [
+            ['codePostal' => '44800', 'nom' => 'Saint-Herblain'],
+            ['codePostal' => '35131', 'nom' => 'Chartres-de-Bretagne'],
+            ['codePostal' => '29000', 'nom' => 'Quimper'],
+            ['codePostal' => '79000', 'nom' => 'Niort'],
+        ];
 
-        $villes = [];
-        for ($i = 0; $i < 5; $i++) {
+        foreach ($villeData as $data) {
             $ville = new Ville();
-            $ville->setNom($faker->city());
-            $ville->setCodePostal(str_pad(rand(1000, 95999), 5, '0', STR_PAD_LEFT));
+            $ville->setNom($data['nom']);
+            $ville->setCodePostal($data['codePostal']);
             $manager->persist($ville);
-            $villes[] = $ville;
         }
+
         $manager->flush();
     }
 }
