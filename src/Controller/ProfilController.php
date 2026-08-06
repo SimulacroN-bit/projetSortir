@@ -2,25 +2,36 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\ProfilType;
-use App\Repository\ParticipantRepository;
-use Doctrine\ORM\EntityManager;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-#[Route("/profil")]
+#[Route("/mon-profil")]
 final class ProfilController extends AbstractController
 {
-    #[Route('/{id}/update', name: 'profil_update', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function updateProfil(int $id, ParticipantRepository $participantRepository, Request $request,
-                                 EntityManagerInterface $em): Response
-    {
-        //récupère ce participant en fonction de l'id présent dans l'URL
-        $participant = $participantRepository->find($id);
+    #[Route('/', name: 'profil_update', methods: ['GET', 'POST'])]
+    public function updateProfil(
+        Request $request,
+        EntityManagerInterface $em,
+        UserPasswordHasherInterface $passwordHasher,
+        UserRepository $userRepository,
+    ): Response {
+        /** @var User|null $user */
+        $user = $this->getUser();
+
+        //vérifie que l'instance utilisateur ne fait pas partie de l'entité User
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException('Vous devez être connecté.');
+        }
+
+        $participant = $user->getParticipant();
 
         //s'il n'existe pas en bdd, on déclenche une erreur 404
         if (!$participant) {
@@ -35,16 +46,43 @@ final class ProfilController extends AbstractController
 
         //si le formulaire est soumis et valide...
         if ($profilForm->isSubmitted() && $profilForm->isValid()) {
+            //Mise à jour du pseudo sur l'entité User
+            $newUsername = $profilForm->get('username')->getData();
+
+            //vérification de l'unicité du pseudo si modifié
+            if ($newUsername !== $user->getUsername()) {
+                $existingUser = $userRepository->findOneBy(['username' => $newUsername]);
+                if ($existingUser instanceof User) {
+                    $profilForm->get('username')->addError(new FormError('Ce pseudo est déjà utilisé.'));
+
+                    return $this->render('profil/profil.html.twig', [
+                        'profilForm' => $profilForm,
+                        'participant' => $participant,
+                    ]);
+                }
+                $user->setUsername($newUsername);
+            }
+
+            //Mise à jour du mot de passe uniquement s'il a été rempli
+            $plainPassword = $profilForm->get('plainPassword')->getData();
+            if ($plainPassword){
+                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+                $user->setPassword($hashedPassword);
+            }
+
             //sauvegarde en bdd
             $em->flush();
+
             //affiche un message sur la prochaine page
-            $this->addFlash('succes', 'Le participant a été modifié avec succès!');
+            $this->addFlash('success', 'Profil modifié avec succès!');
+
             //redirige vers la page de détail du participant fraîchement modifiée
-            return $this->redirectToRoute('detail_profil', ['id' => $participant->getId()]);
+            return $this->redirectToRoute('detail_profil');
         }
         // affiche le formulaire
-        return $this->render('profil/update.html.twig', [
-            'profilForm' => $profilForm
+        return $this->render('profil/profil.html.twig', [
+            'profilForm' => $profilForm,
+            'participant' => $participant,
         ]);
     }
 

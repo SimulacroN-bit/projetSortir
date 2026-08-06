@@ -13,14 +13,23 @@ class UserFixtures extends Fixture
     {
     }
 
+    public function getDependencies(): array
+    {
+        return [
+
+        ]
+    }
+
     public function load(ObjectManager $manager): void
     {
+        //Admin
         $userAdmin = new User();
         $userAdmin->setUsername('admin');
         $userAdmin->setRoles(['ROLE_ADMIN']);
-        $hashedPassword = $this->passwordHasher->hashPassword($userAdmin, '12345');
-        $userAdmin->setPassword($hashedPassword);
+        $userAdmin->setPassword($this->passwordHasher->hashPassword($userAdmin, '12345'));
         $manager->persist($userAdmin);
+
+
 
         for ($i = 1; $i <= 10; $i++) {
             $user = new User();
