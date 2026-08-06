@@ -11,7 +11,7 @@
         {% endif %}
         {% if app.user %}
             <a href="{{ path('app_user') }}" class="btn btn-lm btn-info">Accueil</a>
-            <a href="{{ path('app_user') }}" class="btn btn-lm btn-info">Mon Profil</a>
+            <a href="{{ path('profil_update') }}" class="btn btn-lm btn-info">Mon Profil</a>
         {% endif %}
         {% if app.user %}
             <a href="{{ path('app_logout') }}" class="btn btn-lm btn-info">Se déconnecter</a>

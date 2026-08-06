@@ -6,8 +6,12 @@ use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
+#[ORM\UniqueConstraint(name: 'UNIQ_PARTICIPANT_MAIL', fields: ['mail'])]
+#[UniqueEntity(fields: ['mail'], message: 'Un compte existe déjà avec cette adresse mail.')]
 class Participant
 {
     #[ORM\Id]
@@ -25,6 +29,8 @@ class Participant
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank(message: 'L\'email est obligatoire.')]
+    #[Assert\Email(message: 'L\'email n\'est pas valide.')]
     private ?string $mail = null;
 
     #[ORM\Column]

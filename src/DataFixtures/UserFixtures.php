@@ -2,6 +2,8 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Campus;
+use App\Entity\Participant;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -15,22 +17,57 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+        //Récupère le campus créé dans CampusFixture
+        $campus = $this->getReference(CampusFixtures:: CAMPUS_NANTES);
+
+        //Admin
         $userAdmin = new User();
         $userAdmin->setUsername('admin');
         $userAdmin->setRoles(['ROLE_ADMIN']);
-        $hashedPassword = $this->passwordHasher->hashPassword($userAdmin, '12345');
-        $userAdmin->setPassword($hashedPassword);
-        $manager->persist($userAdmin);
+        $userAdmin->setPassword($this->passwordHasher->hashPassword($userAdmin, '12345'));
 
+        $participantAdmin = new Participant();
+        $participantAdmin->setNom('Admin');
+        $participantAdmin->setPrenom('Super');
+        $participantAdmin->setTelephone('0600000000');
+        $participantAdmin->setMail('admin@sortir.com');
+        $participantAdmin->setAdministrateur(true);
+        $participantAdmin->setActif(true);
+        $participantAdmin->setCampus($campus);
+        $participantAdmin->setUser($userAdmin); //synchronise les deux côtés
+
+        $manager->persist($userAdmin);
+        $manager->persist($participantAdmin);
+
+
+        //Utilisateurs lambda
         for ($i = 1; $i <= 10; $i++) {
             $user = new User();
             $user->setUsername("user$i");
             $user->setRoles(['ROLE_USER']);
-            $hashedPassword = $this->passwordHasher->hashPassword($user, 'abc123');
-            $user->setPassword($hashedPassword);
+            $user->setPassword($this->passwordHasher->hashPassword($user, 'abc123'));
+
+            $participant = new Participant();
+            $participant->setNom("Nom$i");
+            $participant->setPrenom("Prenom$i");
+            $participant->setTelephone("0600000000$i");
+            $participant->setMail("user$i@sortir.com");
+            $participant->setAdministrateur(false);
+            $participant->setActif(true);
+            $participant->setCampus($campus);
+            $participant->setUser($user);
+
             $manager->persist($user);
+            $manager->persist($participant);
         }
 
         $manager->flush();
     }
+
+    /**public function getDependencies(): array
+    {
+        return [
+            CampusFixtures::class,
+        ];
+    }*/
 }
