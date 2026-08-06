@@ -14,9 +14,7 @@ class LieuFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         $villeRepo = $manager->getRepository(Ville::class);
-        $campusRepo = $manager->getRepository(Campus::class);
         $villes = $villeRepo->findAll();
-        $campuses = $campusRepo->findAll();
 
         $lieux = [
             ['nom' => 'Parc Merlin', 'rue' => '3 rue Michael Faraday'],
@@ -30,7 +28,6 @@ class LieuFixtures extends Fixture implements DependentFixtureInterface
             $lieu->setNom($data['nom']);
             $lieu->setRue($data['rue']);
             $lieu->setVille($villes[$index % count($villes)]);
-            $lieu->setCampus($campuses[$index % count($campuses)]);
             $lieu->setLatitude(46.0 + ($index * 0.5));
             $lieu->setLongitude(-1.0 + ($index * 0.3));
             $manager->persist($lieu);
@@ -41,6 +38,6 @@ class LieuFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies(): array
     {
-        return [VilleFixtures::class, CampusFixtures::class];
+        return [VilleFixtures::class];
     }
 }
