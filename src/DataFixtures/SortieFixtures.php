@@ -9,31 +9,24 @@ use App\Entity\Sortie;
 use App\Entity\Ville;
 use App\Enum\Etat;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class SortieFixtures extends Fixture
+class SortieFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
         $faker = \Faker\Factory::create('fr_FR');
 
-        $campus = new Campus();
-        $campus->setNom('Campus ENI');
-        $manager->persist($campus);
-        $manager->flush();
+        $villeRepo = $manager->getRepository(Ville::class);
+        $villes = $villeRepo->findAll();
 
-        $lieux = [];
-        for ($i = 0; $i < 10; $i++) {
-            $lieu = new Lieu();
-            $lieu->setNom($faker->word() . ' ' . $faker->word());
-            $lieu->setRue(rand(1, 200) . ' ' . $faker->streetSuffix() . ' ' . $faker->lastName());
-            $lieu->setLatitude($faker->latitude(40, 50));
-            $lieu->setLongitude($faker->longitude(-5, 8));
-            $lieu->setVille($villes[array_rand($villes)]);
-            $manager->persist($lieu);
-            $lieux[] = $lieu;
-        }
-        $manager->flush();
+        $campusRepo = $manager->getRepository(Campus::class);
+        $campuses = $campusRepo->findAll();
+        $campus = $campuses[0] ?? null;
+
+        $lieuRepo = $manager->getRepository(Lieu::class);
+        $lieux = $lieuRepo->findAll();
 
         $participants = [];
         for ($i = 0; $i < 10; $i++) {
@@ -76,5 +69,10 @@ class SortieFixtures extends Fixture
             $sorties[] = $sortie;
         }
         $manager->flush();
+    }
+
+    public function getDependencies(): array
+    {
+        return [VilleFixtures::class, LieuFixtures::class, CampusFixtures::class];
     }
 }

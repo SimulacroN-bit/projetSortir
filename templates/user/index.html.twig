@@ -24,53 +24,53 @@
         <nav class="navbar navbar-light bg-light">
             <div class="container-fluid">
                 <h4 class="mb-3">Filtrer les sorties</h4>
-                <form class="w-100">
+                <form class="w-100" method="GET">
                     <div class="row g-3">
                         <div class="col-md-4">
                             <div class="d-flex align-items-center gap-2">
                                 <label for="campus" class="form-label mb-0">Campus</label>
-                                <select id="campus" class="form-select" aria-label="Choisis un campus">
-                                    <option selected>Choisis un campus</option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
+                                <select id="campus" name="campus" class="form-select" aria-label="Choisis un campus">
+                                    <option value="">Choisis un campus</option>
+                                    {% for c in campus %}
+                                        <option value="{{ c.id }}" {% if filters.campusId == c.id %}selected{% endif %}>{{ c.nom }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="d-flex align-items-center gap-2">
                             <p class="mt-2">Le nom de la sortie contient</p>
-                            <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                            <input class="form-control" type="search" name="nomSortie" placeholder="Search" aria-label="Search" value="{{ filters.nomSortie }}">
                             </div>
                             <div class="d-flex align-items-center gap-2">
                             <label for="dateDebut" class="form-label mt-2">Entre</label>
-                            <input type="date" class="form-control" id="dateDebut" name="dateDebut">
+                            <input type="date" class="form-control" id="dateDebut" name="dateDebut" value="{{ filters.dateDebut }}">
                             </div>
                             <div class="d-flex align-items-center gap-2">
-                            <label for="dateDebut" class="form-label mt-2">et</label>
-                            <input type="date" class="form-control" id="dateDebut" name="dateDebut">
+                            <label for="dateFin" class="form-label mt-2">et</label>
+                            <input type="date" class="form-control" id="dateFin" name="dateFin" value="{{ filters.dateFin }}">
                             </div>
                         </div>
 
                         <div class="col-md-4 align-items-center">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault1">
+                                <input class="form-check-input" type="checkbox" name="organisateur" value="1" id="flexCheckDefault1" {% if filters.organisateur %}checked{% endif %}>
                                 <label class="form-check-label" for="flexCheckDefault1">
                                     Sorties dont je suis l'organisateur/rice
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault2">
+                                <input class="form-check-input" type="checkbox" name="inscrit" value="1" id="flexCheckDefault2" {% if filters.inscrit %}checked{% endif %}>
                                 <label class="form-check-label" for="flexCheckDefault2">
                                     Sorties auxquelles je suis inscrit/e
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault3">
+                                <input class="form-check-input" type="checkbox" name="nonInscrit" value="1" id="flexCheckDefault3" {% if filters.nonInscrit %}checked{% endif %}>
                                 <label class="form-check-label" for="flexCheckDefault3">
                                     Sorties auxquelles je ne suis pas inscrit/e
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault4">
+                                <input class="form-check-input" type="checkbox" name="termine" value="1" id="flexCheckDefault4" {% if filters.termine %}checked{% endif %}>
                                 <label class="form-check-label" for="flexCheckDefault4">
                                     Sorties terminées
                                 </label>
@@ -112,7 +112,7 @@
                 </td>
                 <td>{{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</td>
                 <td>
-                    <button class="btn btn-sm btn-outline-primary">Détails</button>
+                    <button class="btn btn-sm btn-outline-primary">Afficher</button>
                 </td>
             </tr>
             {% endfor %}
