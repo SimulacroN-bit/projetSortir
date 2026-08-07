@@ -6,67 +6,45 @@ use App\Entity\Campus;
 use App\Entity\Participant;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements DependentFixtureInterface
 {
-    public function __construct(private UserPasswordHasherInterface $passwordHasher)
+    public const USER_ADMIN_REFERENCE = 'userAdmin-ref';
+    public const USER_REFERENCE = 'user-ref';
+    public const NB_USERS = 10;
+    public function __construct(private readonly UserPasswordHasherInterface $passwordHasher)
     {
     }
 
     public function load(ObjectManager $manager): void
     {
-        //Récupère tous les campus créés dans CampusFixture
-        $campus = [
-            $this->getReference(CampusFixtures::CAMPUS_NANTES, Campus::class),
-            $this->getReference(CampusFixtures::CAMPUS_NIORT, Campus::class),
-            $this->getReference(CampusFixtures::CAMPUS_QUIMPER, Campus::class),
-            $this->getReference(CampusFixtures::CAMPUS_RENNES, Campus::class),
-        ];
+        $faker = \Faker\Factory::create('fr_FR');
 
         //Admin
         $userAdmin = new User();
         $userAdmin->setUsername('admin');
         $userAdmin->setRoles(['ROLE_ADMIN']);
         $userAdmin->setPassword($this->passwordHasher->hashPassword($userAdmin, '12345'));
-
-        $participantAdmin = new Participant();
-        $participantAdmin->setNom('Admin');
-        $participantAdmin->setPrenom('Super');
-        $participantAdmin->setTelephone('0600000000');
-        $participantAdmin->setMail('admin@sortir.com');
-        $participantAdmin->setAdministrateur(true);
-        $participantAdmin->setActif(true);
-        $participantAdmin->setCampus($campus[0]);
-        $participantAdmin->setUser($userAdmin); //synchronise les deux côtés
-
         $manager->persist($userAdmin);
-        $manager->persist($participantAdmin);
 
+        $this->addReference(self::USER_ADMIN_REFERENCE, $userAdmin);
 
         //Utilisateurs lambda
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= self::NB_USERS; $i++) {
             $user = new User();
             $user->setUsername("user$i");
             $user->setRoles(['ROLE_USER']);
             $user->setPassword($this->passwordHasher->hashPassword($user, 'abc123'));
 
-            $participant = new Participant();
-            $participant->setNom("Nom$i");
-            $participant->setPrenom("Prenom$i");
-            $participant->setTelephone("06" . str_pad($i, 8, "0", STR_PAD_LEFT));
-            $participant->setMail("user$i@sortir.com");
-            $participant->setAdministrateur(false);
-            $participant->setActif(true);
-            $participant->setCampus($campus[$i % count($campus)]);
-            $participant->setUser($user);
-
             $manager->persist($user);
-            $manager->persist($participant);
+            $this->addReference(self::USER_REFERENCE . $i, $user);
         }
-
-        $manager->flush();
+        /**aucun flush() ici comme les utilisateurs sont liés aux participants par une relation OneToOne
+         * le flush sera donc sur ParticipantFixtures juste après l'instanciation et la liaison des participants tout
+         * juste créés*/
     }
 
     public function getDependencies(): array

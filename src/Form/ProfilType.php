@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Campus;
 use App\Entity\Participant;
+use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -31,7 +32,7 @@ class ProfilType extends AbstractType
                 'label' => 'Pseudo',
                 'mapped' => false,
                 //Pré-remplit le pseudo actuel depuis l'objet User lié
-                'data' => $options['username']?->getUsername(),
+                'data' => $options['username'] ?? null,
                 'constraints' => [
                     new NotBlank(['message' => 'Le pseudo ne peut être vide.']),
                     new Length([
@@ -68,5 +69,8 @@ class ProfilType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Participant::class,
         ]);
+
+        $resolver->setDefined(['username']);
+        $resolver->setAllowedTypes('username', ['string', 'null']);
     }
 }

@@ -39,7 +39,7 @@ final class ProfilController extends AbstractController
         }
 
         //le formulaire associé à l'entité vide
-        $profilForm = $this->createForm(ProfilType::class, $participant);
+        $profilForm = $this->createForm(ProfilType::class, $participant, ['username' => $user->getUsername()]);
 
         //récupère les données du form et les injecte dans le $participant
         $profilForm->handleRequest($request);
@@ -77,7 +77,7 @@ final class ProfilController extends AbstractController
             $this->addFlash('success', 'Profil modifié avec succès!');
 
             //redirige vers la page de détail du participant fraîchement modifiée
-            return $this->redirectToRoute('detail_profil');
+            return $this->redirectToRoute('profil_update');
         }
         // affiche le formulaire
         return $this->render('profil/profil.html.twig', [
