@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une sortie{% endblock %}
+
+{% block body %}
+<div class="container my-4">
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h1 class="text-center"><strong>Créer une sortie</strong></h1>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+
+                    <p>nom de la sortie</p><input class="form-control" type="text" placeholder="Default input" aria-label="default input example">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+
+                </div>
+            </div>
+            <a href="{{ path('app_user') }}" class="btn btn-secondary mb-3">Retour</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
