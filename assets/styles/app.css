@@ -1,3 +1,7 @@
 body {
     background-color: white;
 }
+.thead-dark th {
+      background-color: lightslategrey !important;
+       color: white;
+}
