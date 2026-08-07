@@ -20,7 +20,7 @@
     {% endif %}
 </div>
 
-    <div>
+    <div class="card shadow-lg">
         <nav class="navbar navbar-light bg-light">
             <div class="container-fluid">
                 <h4 class="mb-3">Filtrer les sorties</h4>
@@ -84,6 +84,8 @@
                 </form>
             </div>
         </nav>
+    </div>
+        <div class="card shadow-lg">
         <table class="table">
             <thead class="thead-dark">
             <tr>
@@ -110,7 +112,11 @@
                         X
                     {% endif %}
                 </td>
-                <td>{{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</td>
+                <td>
+                    <a href="{{ path('participant_detail', {'id': sortie.organisateur.id}) }}" class="text-decoration-none">
+                        {{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}
+                    </a>
+                </td>
                 <td>
                     <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Afficher</a>
                 </td>
@@ -118,6 +124,7 @@
             {% endfor %}
             </tbody>
         </table>
+        </div>
         <button class="btn btn-lg btn-outline-secondary" type="submit">Créer une sortie</button>
     </div>
 {% endblock %}
