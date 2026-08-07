@@ -8,39 +8,21 @@
             <div class="col-md-8">
                 <div class="card shadow-lg">
                     <div class="card-header bg-info text-white">
-                        <h2 class="mb-0">
+                        <h2 class="mb-0 text-center">
                             <i class="fas fa-user"></i> {{ participant.prenom }} {{ participant.nom }}
                         </h2>
                     </div>
                     <div class="card-body p-5">
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <p><strong>Prénom:</strong> {{ participant.prenom }}</p>
-                                <p><strong>Nom:</strong> {{ participant.nom }}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>Campus:</strong> {{ participant.campus.nom }}</p>
-                                <p><strong>Actif:</strong>
-                                    {% if participant.actif %}
-                                        <span class="badge bg-success">Oui</span>
-                                    {% else %}
-                                        <span class="badge bg-danger">Non</span>
-                                    {% endif %}
-                                </p>
+                                <p><strong>Campus : </strong> {{ participant.campus.nom }}</p>
+                                <p><strong>Prénom : </strong> {{ participant.prenom }}</p>
+                                <p><strong>Nom : </strong> {{ participant.nom }}</p>
+                                <p><strong>Téléphone : </strong> {{ participant.telephone }}</p>
+                                <p><strong>Email : </strong> {{ participant.mail }}</p>
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><strong>Téléphone:</strong> {{ participant.telephone }}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>Email:</strong> {{ participant.mail }}</p>
-                            </div>
-                        </div>
-
                         <hr class="my-4">
-
                         <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                             <a href="{{ path('app_user') }}" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left"></i> Retour
