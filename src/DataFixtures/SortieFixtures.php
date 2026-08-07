@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Campus;
 use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
@@ -14,6 +13,8 @@ use Doctrine\Persistence\ObjectManager;
 
 class SortieFixtures extends Fixture implements DependentFixtureInterface
 {
+    use CampusReferenceTrait;
+
     /**
      * @throws \Exception
      */
@@ -21,34 +22,33 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
     {
         $faker = \Faker\Factory::create('fr_FR');
 
+        //récupération des villes
         $villeRepo = $manager->getRepository(Ville::class);
         $villes = $villeRepo->findAll();
 
-        $campusRepo = $manager->getRepository(Campus::class);
-        $campus = $campusRepo->findAll();
-
+        //récupération des lieux
         $lieuRepo = $manager->getRepository(Lieu::class);
         $lieux = $lieuRepo->findAll();
 
-        $participants = [];
-        for ($i = 0; $i < 10; $i++) {
-            $participant = new Participant();
-            $participant->setNom($faker->lastName());
-            $participant->setPrenom($faker->firstName());
-            $participant->setTelephone('06' . str_pad(rand(10000000, 99999999), 8, '0', STR_PAD_LEFT));
-            $participant->setMail($faker->email());
-            $participant->setAdministrateur($i === 0);
-            $participant->setActif(true);
-            $participant->setCampus($campus[$i % count($campus)]);
-            $manager->persist($participant);
-            $participants[] = $participant;
-        }
-        $manager->flush();
+        //récupération des campus
+        $campus = $this->getCampusReferences();
 
-        $sorties = [];
+        //Récupère les participants déjà créées et liés à un vrai  dans ParticipantFixtures
+        $participants = [];
+        for ($i = 1; $i < UserFixtures::NB_USERS; $i++) {
+            $participants[] = $this->getReference(ParticipantFixtures::PARTICIPANT_REFERENCE . $i,
+                Participant::class
+            );
+        }
+        $participantAdmin = $this->getReference(ParticipantFixtures::PARTICIPANT_ADMIN_REFERENCE,
+            Participant::class
+        );
+
         $activites = ['Randonnée', 'Cinéma', 'Restaurant', 'Musée', 'Picnic', 'Sport', 'Bowling', 'Concert'];
         $states = [Etat::Ouverte, Etat::Cloturee, Etat::EnCours, Etat::Annulee, Etat::Terminee, Etat::EnCreation];
 
+
+        //création des fixtures de sortie
         for ($i = 0; $i < 15; $i++) {
             $sortie = new Sortie();
             $sortie->setNom($activites[$i % count($activites)] . ' ' . ($i + 1));
@@ -68,13 +68,17 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
             }
 
             $manager->persist($sortie);
-            $sorties[] = $sortie;
         }
         $manager->flush();
     }
 
     public function getDependencies(): array
     {
-        return [VilleFixtures::class, LieuFixtures::class, CampusFixtures::class];
+        return [
+            VilleFixtures::class,
+            LieuFixtures::class,
+            CampusFixtures::class,
+            ParticipantFixtures::class,
+        ];
     }
 }
