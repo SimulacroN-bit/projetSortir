@@ -7,16 +7,16 @@
     </div>
     <div class="ms-auto d-flex gap-2">
         {% if is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('app_user') }}" class="btn btn-lm btn-info">Administration</a>
+            <a href="{{ path('app_user') }}" class="btn btn-lm btn-info text-white">Administration</a>
         {% endif %}
         {% if app.user %}
-            <a href="{{ path('app_user') }}" class="btn btn-lm btn-info">Accueil</a>
-            <a href="{{ path('profil_update') }}" class="btn btn-lm btn-info">Mon Profil</a>
+            <a href="{{ path('app_user') }}" class="btn btn-lm btn-info text-white">Accueil</a>
+            <a href="{{ path('profil_update') }}" class="btn btn-lm btn-info text-white">Mon Profil</a>
         {% endif %}
         {% if app.user %}
-            <a href="{{ path('app_logout') }}" class="btn btn-lm btn-info">Se déconnecter</a>
+            <a href="{{ path('app_logout') }}" class="btn btn-lm btn-info text-white">Se déconnecter</a>
         {% else %}
-            <a href="{{ path('app_login') }}" class="btn btn-lm btn-info">Login</a>
+            <a href="{{ path('app_login') }}" class="btn btn-lm btn-info text-white">Login</a>
         {% endif %}
     </div>
 </nav>
