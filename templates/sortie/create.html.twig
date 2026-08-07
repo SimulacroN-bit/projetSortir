@@ -11,9 +11,41 @@
         <div class="card-body">
             <div class="row mb-3">
                 <div class="col-md-6">
+                    <div class="d-flex align-items-center gap-2">
+                        <p><strong>Nom de la sortie : </strong></p>
+                    <input class="form-control" type="text" placeholder="Tapez le nom de la sortie" aria-label="sortie">
+                    </div>
+                    <p><strong>Date et heure de la sortie : </strong></p>
+                    <div class="d-flex align-items-center gap-2">
+                        <label for="dateDebut" class="form-label mt-2"></label>
+                        <input type="date" class="form-control" id="dateDebut" name="dateDebut" value="">
+                    </div>
+                    <p><strong>Date limite d'inscription : </strong></p>
+                    <div class="d-flex align-items-center gap-2">
+                        <label for="dateDebut" class="form-label mt-2"></label>
+                        <input type="date" class="form-control" id="dateDebut" name="dateDebut" value="">
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <p><strong>Nombre de places : </strong></p>
+                        <input class="form-control" type="text" placeholder="Tapez le nom de la sortie" aria-label="sortie">
+                    </div>
 
-                    <p>nom de la sortie</p><input class="form-control" type="text" placeholder="Default input" aria-label="default input example">
+
                 </div>
+                <div class="d-flex align-items-center gap-2">
+                    <label for="lieu" class="form-label mb-0">Lieu</label>
+                    <select id="lieu" name="lieu" class="form-select" aria-label="Choisis un lieu">
+                        <option value="">Choisis un lieu</option>
+                        {% for l in lieux %}
+                            <option value="{{ l.id }}">{{ l.nom }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text">Description et infos</span>
+                    <textarea class="form-control" aria-label="With textarea"></textarea>
+                </div>
+
             </div>
 
             <div class="row mb-3">
