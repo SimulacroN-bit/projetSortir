@@ -11,44 +11,43 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <div class="row justify-content-center align-items-start g-5">
-
+    <div class="container card mt-9 shadow-lg">
+        <div class="row justify-content-center align-items-start">
+            <div class="card-header bg-info text-white mb-3">
             {# Colonne centrale : formulaire #}
-            <div class="col-12 col-lg-5">
-                <h2 class="text-center fw-bold mb-4">Mon profil</h2>
-
+                <h4 class="text-center fw-bold">Mon profil</h4>
+            </div>
                 {{ form_start(profilForm) }}
                 <div class="row mb-3 align-items-center">
-                    <label class="col-4 profil-form-label">Campus</label>
+                    <label class="col-4 profil-form-label">Campus : </label>
                     <div class="col-8">{{ form_widget(profilForm.campus, {'attr': {'class': 'form-select'}}) }}</div>
                 </div>
                 <div class="row mb-3 align-items-center">
-                    <label class="col-4 profil-form-label">Pseudo</label>
+                    <label class="col-4 profil-form-label">Pseudo : </label>
                     <div class="col-8">{{ form_widget(profilForm.username, {'attr': {'class': 'form-control'}}) }}</div>
                 </div>
                 <div class="row mb-3 align-items-center">
-                    <label class="col-4 profil-form-label">Prénom</label>
+                    <label class="col-4 profil-form-label">Prénom : </label>
                     <div class="col-8">{{ form_widget(profilForm.prenom, {'attr': {'class': 'form-control'}}) }}</div>
                 </div>
                 <div class="row mb-3 align-items-center">
-                    <label class="col-4 profil-form-label">Nom</label>
+                    <label class="col-4 profil-form-label">Nom : </label>
                     <div class="col-8">{{ form_widget(profilForm.nom, {'attr': {'class': 'form-control'}}) }}</div>
                 </div>
                 <div class="row mb-3 align-items-center">
-                    <label class="col-4 profil-form-label">Téléphone</label>
+                    <label class="col-4 profil-form-label">Téléphone : </label>
                     <div class="col-8">{{ form_widget(profilForm.telephone, {'attr': {'class': 'form-control'}}) }}</div>
                 </div>
                 <div class="row mb-3 align-items-center">
-                    <label class="col-4 profil-form-label">Email</label>
+                    <label class="col-4 profil-form-label">Email : </label>
                     <div class="col-8">{{ form_widget(profilForm.mail, {'attr': {'class': 'form-control'}}) }}</div>
                 </div>
                 <div class="row mb-3 align-items-center">
-                    <label class="col-4 profil-form-label">Mot de passe</label>
+                    <label class="col-4 profil-form-label">Mot de passe : </label>
                     <div class="col-8">{{ form_widget(profilForm.plainPassword.first, {'attr': {'class': 'form-control'}}) }}</div>
                 </div>
                 <div class="row mb-3 align-items-center">
-                    <label class="col-4 profil-form-label">Confirmation</label>
+                    <label class="col-4 profil-form-label">Confirmation : </label>
                     <div class="col-8">{{ form_widget(profilForm.plainPassword.second, {'attr': {'class': 'form-control'}}) }}</div>
                 </div>
 
