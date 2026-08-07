@@ -32,6 +32,12 @@ final class SortieController extends AbstractController
         ]);
     }
 
+    #[Route('/sortie/create', name: 'app_sortie_create')]
+    public function create(): Response
+    {
+        return $this->render('sortie/create.html.twig');
+    }
+
     #[Route('/sortie/{id}', name: 'app_sortie_detail')]
     public function detail(Sortie $sortie): Response
     {
