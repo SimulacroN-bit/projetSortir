@@ -17,8 +17,13 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        //Récupère le campus créé dans CampusFixture
-        $campus = $this->getReference(CampusFixtures:: CAMPUS_NANTES);
+        //Récupère tous les campus créés dans CampusFixture
+        $campus = [
+            $this->getReference(CampusFixtures::CAMPUS_NANTES, Campus::class),
+            $this->getReference(CampusFixtures::CAMPUS_NIORT, Campus::class),
+            $this->getReference(CampusFixtures::CAMPUS_QUIMPER, Campus::class),
+            $this->getReference(CampusFixtures::CAMPUS_RENNES, Campus::class),
+        ];
 
         //Admin
         $userAdmin = new User();
@@ -33,7 +38,7 @@ class UserFixtures extends Fixture
         $participantAdmin->setMail('admin@sortir.com');
         $participantAdmin->setAdministrateur(true);
         $participantAdmin->setActif(true);
-        $participantAdmin->setCampus($campus);
+        $participantAdmin->setCampus($campus[0]);
         $participantAdmin->setUser($userAdmin); //synchronise les deux côtés
 
         $manager->persist($userAdmin);
@@ -50,11 +55,11 @@ class UserFixtures extends Fixture
             $participant = new Participant();
             $participant->setNom("Nom$i");
             $participant->setPrenom("Prenom$i");
-            $participant->setTelephone("0600000000$i");
+            $participant->setTelephone("06" . str_pad($i, 8, "0", STR_PAD_LEFT));
             $participant->setMail("user$i@sortir.com");
             $participant->setAdministrateur(false);
             $participant->setActif(true);
-            $participant->setCampus($campus);
+            $participant->setCampus($campus[$i % count($campus)]);
             $participant->setUser($user);
 
             $manager->persist($user);
@@ -64,10 +69,10 @@ class UserFixtures extends Fixture
         $manager->flush();
     }
 
-    /**public function getDependencies(): array
+    public function getDependencies(): array
     {
         return [
             CampusFixtures::class,
         ];
-    }*/
+    }
 }

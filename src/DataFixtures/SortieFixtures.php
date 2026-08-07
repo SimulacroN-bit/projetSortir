@@ -14,6 +14,9 @@ use Doctrine\Persistence\ObjectManager;
 
 class SortieFixtures extends Fixture implements DependentFixtureInterface
 {
+    /**
+     * @throws \Exception
+     */
     public function load(ObjectManager $manager): void
     {
         $faker = \Faker\Factory::create('fr_FR');
@@ -22,8 +25,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         $villes = $villeRepo->findAll();
 
         $campusRepo = $manager->getRepository(Campus::class);
-        $campuses = $campusRepo->findAll();
-        $campus = $campuses[0] ?? null;
+        $campus = $campusRepo->findAll();
 
         $lieuRepo = $manager->getRepository(Lieu::class);
         $lieux = $lieuRepo->findAll();
@@ -37,7 +39,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
             $participant->setMail($faker->email());
             $participant->setAdministrateur($i === 0);
             $participant->setActif(true);
-            $participant->setCampus($campus);
+            $participant->setCampus($campus[$i % count($campus)]);
             $manager->persist($participant);
             $participants[] = $participant;
         }
@@ -58,7 +60,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
             $sortie->setInfosSortie($faker->sentence());
             $sortie->setEtat($states[$i % count($states)]);
             $sortie->setLieu($lieux[$i % count($lieux)]);
-            $sortie->setCampus($campus);
+            $sortie->setCampus($campus[$i % count($campus)]);
             $sortie->setOrganisateur($participants[0]);
 
             for ($j = 1; $j < rand(2, 6); $j++) {
