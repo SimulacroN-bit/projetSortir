@@ -5,7 +5,7 @@
 {% block body %}
 <div class="container my-4">
     <div class="card">
-        <div class="card-header">
+        <div class="card-header bg-info text-white">
             <h1 class="text-center"><strong>Afficher une sortie</strong></h1>
         </div>
         <div class="card-body">
@@ -40,7 +40,11 @@
                     <h5>Liste des participants inscrits</h5>
                     <ul class="list-group">
                         {% for participant in sortie.participants %}
-                            <li class="list-group-item">{{ participant.prenom }} {{ participant.nom }}</li>
+                            <li class="list-group-item">
+                                <a href="{{ path('participant_detail', {'id': participant.id}) }}" class="text-decoration-none">
+                                    {{ participant.prenom }} {{ participant.nom }}
+                                </a>
+                            </li>
                         {% endfor %}
                     </ul>
                 </div>
