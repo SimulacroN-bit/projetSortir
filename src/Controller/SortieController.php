@@ -19,36 +19,27 @@ final class SortieController extends AbstractController
         CampusRepository $campusRepository,
         Request $request
     ): Response {
+        $user = $this->getUser();
+
         $campusId = $request->query->get('campus');
         $nomSortie = $request->query->get('nomSortie');
         $dateDebut = $request->query->get('dateDebut');
         $dateFin = $request->query->get('dateFin');
-        $organisateur = $request->query->getBoolean('organisateur');
-        $inscrit = $request->query->getBoolean('inscrit');
-        $nonInscrit = $request->query->getBoolean('nonInscrit');
         $termine = $request->query->getBoolean('termine');
 
-        $sorties = $sortieRepository->findAll();
+        $organisateur = $user ? $request->query->getBoolean('organisateur') : false;
+        $inscrit = $user ? $request->query->getBoolean('inscrit') : false;
+        $nonInscrit = $user ? $request->query->getBoolean('nonInscrit') : false;
 
-        if ($campusId) {
-            $sorties = array_filter($sorties, fn($s) => $s->getCampus()?->getId() == $campusId);
-        }
+        $dateDebutObj = $dateDebut ? \DateTime::createFromFormat('Y-m-d', $dateDebut) : null;
+        $dateFinObj = $dateFin ? \DateTime::createFromFormat('Y-m-d', $dateFin) : null;
 
-        if ($nomSortie) {
-            $sorties = array_filter($sorties, fn($s) => stripos($s->getNom(), $nomSortie) !== false);
-        }
-
-        if ($dateDebut) {
-            $dateDebutObj = \DateTime::createFromFormat('Y-m-d', $dateDebut);
-            $sorties = array_filter($sorties, fn($s) => $s->getDateHeureDebut() >= $dateDebutObj);
-        }
-
-        if ($dateFin) {
-            $dateFinObj = \DateTime::createFromFormat('Y-m-d', $dateFin);
-            $sorties = array_filter($sorties, fn($s) => $s->getDateHeureDebut() <= $dateFinObj);
-        }
-
-        $user = $this->getUser();
+        $sorties = $sortieRepository->findByFilters(
+            nom: $nomSortie ?: null,
+            dateDebut: $dateDebutObj,
+            dateFin: $dateFinObj,
+            campusId: $campusId ? (int)$campusId : null,
+        );
 
         if ($organisateur && $user) {
             $sorties = array_filter($sorties, fn($s) => $s->getOrganisateur() === $user);
@@ -69,7 +60,7 @@ final class SortieController extends AbstractController
         $campus = $campusRepository->findAll();
 
         return $this->render('user/index.html.twig', [
-            'sorties' => array_values($sorties),
+            'sorties' => $sorties,
             'campus' => $campus,
             'filters' => [
                 'campusId' => $campusId,
