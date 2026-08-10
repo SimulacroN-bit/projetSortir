@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Participant;
 use App\Entity\User;
 use App\Form\ProfilType;
+use App\Repository\ParticipantRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,53 +23,46 @@ final class ProfilController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordHasher,
-        UserRepository $userRepository,
+        ParticipantRepository $participantRepository,
     ): Response {
-        /** @var User|null $user */
-        $user = $this->getUser();
+        /** @var Participant|null $participant */
+        $participant = $this->getUser();
 
-        //vérifie que l'instance utilisateur ne fait pas partie de l'entité User
-        if (!$user instanceof User) {
+        //vérifie que l'instance participant ne fait pas partie de l'entité Participant
+        if (!$participant instanceof Participant) {
             throw $this->createAccessDeniedException('Vous devez être connecté.');
         }
 
-        $participant = $user->getParticipant();
-
-        //s'il n'existe pas en bdd, on déclenche une erreur 404
-        if (!$participant) {
-            throw $this->createNotFoundException('Ce participant n\'existe pas! Désolé!');
-        }
+        $oldPseudo = $participant->getPseudo();
 
         //le formulaire associé à l'entité vide
-        $profilForm = $this->createForm(ProfilType::class, $participant, ['username' => $user->getUsername()]);
+        $profilForm = $this->createForm(ProfilType::class, $participant);
 
         //récupère les données du form et les injecte dans le $participant
         $profilForm->handleRequest($request);
 
         //si le formulaire est soumis et valide...
         if ($profilForm->isSubmitted() && $profilForm->isValid()) {
-            //Mise à jour du pseudo sur l'entité User
-            $newUsername = $profilForm->get('username')->getData();
 
             //vérification de l'unicité du pseudo si modifié
-            if ($newUsername !== $user->getUsername()) {
-                $existingUser = $userRepository->findOneBy(['username' => $newUsername]);
-                if ($existingUser instanceof User) {
-                    $profilForm->get('username')->addError(new FormError('Ce pseudo est déjà utilisé.'));
+            $newPseudo = $participant->getPseudo();
+            if ($newPseudo !== $oldPseudo) {
+                $existingParticipant = $participantRepository->findOneBy(['pseudo' => $newPseudo]);
+                if ($existingParticipant instanceof Participant && $existingParticipant->getId() !== $participant->getId()) {
+                    $profilForm->get('pseudo')->addError(new FormError('Ce pseudo est déjà utilisé.'));
 
                     return $this->render('profil/profil.html.twig', [
                         'profilForm' => $profilForm,
                         'participant' => $participant,
                     ]);
                 }
-                $user->setUsername($newUsername);
             }
 
             //Mise à jour du mot de passe uniquement s'il a été rempli
             $plainPassword = $profilForm->get('plainPassword')->getData();
             if ($plainPassword){
-                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
-                $user->setPassword($hashedPassword);
+                $hashedPassword = $passwordHasher->hashPassword($participant, $plainPassword);
+                $participant->setPassword($hashedPassword);
             }
 
             //sauvegarde en bdd
@@ -85,5 +80,4 @@ final class ProfilController extends AbstractController
             'participant' => $participant,
         ]);
     }
-
 }

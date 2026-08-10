@@ -35,7 +35,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
 
         //Récupère les participants déjà créées et liés à un vrai  dans ParticipantFixtures
         $participants = [];
-        for ($i = 1; $i < UserFixtures::NB_USERS; $i++) {
+        for ($i = 1; $i <ParticipantFixtures::NB_PARTICIPANTS; $i++) {
             $participants[] = $this->getReference(ParticipantFixtures::PARTICIPANT_REFERENCE . $i,
                 Participant::class
             );
