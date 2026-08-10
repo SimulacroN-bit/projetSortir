@@ -128,7 +128,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials() : void
     {
-        // TODO: Implement eraseCredentials() method.
     }
 
 
