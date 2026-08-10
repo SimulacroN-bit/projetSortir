@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Sortie;
 use App\Repository\CampusRepository;
+use App\Repository\LieuRepository;
 use App\Repository\SortieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,6 +30,16 @@ final class SortieController extends AbstractController
             'sorties' => $sorties,
             'campus' => $campus,
             'selectedCampusId' => $campusId,
+        ]);
+    }
+
+    #[Route('/sortie/create', name: 'app_sortie_create')]
+    public function create(LieuRepository $lieuRepository): Response
+    {
+        $lieux = $lieuRepository->findAll();
+
+        return $this->render('sortie/create.html.twig', [
+            'lieux' => $lieux,
         ]);
     }
 
