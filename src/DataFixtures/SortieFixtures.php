@@ -55,7 +55,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
             $daysFromNow = rand(-10, 30);
             $sortie->setDateHeureDebut(new \DateTimeImmutable("+$daysFromNow days " . rand(9, 18) . ':00'));
             $sortie->setDateLimiteInscription(new \DateTimeImmutable('+' . max(1, $daysFromNow - 3) . ' days'));
-            $sortie->setDuree(new \DateTime('0' . rand(1, 8) . ':' . str_pad(rand(0, 59), 2, '0', STR_PAD_LEFT) . ':00'));
+            $sortie->setDuree(rand(30, 480)); // durée en minutes (30 min à 8h)
             $sortie->setNbInscriptionMax(rand(5, 30));
             $sortie->setInfosSortie($faker->sentence());
             $sortie->setEtat($states[$i % count($states)]);
