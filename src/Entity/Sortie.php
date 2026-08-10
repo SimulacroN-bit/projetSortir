@@ -7,7 +7,6 @@ use App\Repository\SortieRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
@@ -24,8 +23,8 @@ class Sortie
     #[ORM\Column]
     private ?DateTimeImmutable $dateHeureDebut = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTime $duree = null;
+    #[ORM\Column]
+    private ?int $duree = null;
 
     #[ORM\Column]
     private ?DateTimeImmutable $dateLimiteInscription = null;
@@ -91,12 +90,12 @@ class Sortie
         return $this;
     }
 
-    public function getDuree(): ?\DateTime
+    public function getDuree(): ?int
     {
         return $this->duree;
     }
 
-    public function setDuree(\DateTime $duree): static
+    public function setDuree(int $duree): static
     {
         $this->duree = $duree;
 
