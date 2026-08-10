@@ -11,34 +11,35 @@
         <div class="card-body">
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <div class="d-flex align-items-center gap-2">
-                        <p><strong>Nom de la sortie : </strong></p>
-                    <input class="form-control" type="text" placeholder="Tapez le nom de la sortie" aria-label="sortie">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <p class="mb-0" style="min-width: 200px;"><strong>Nom de la sortie : </strong></p>
+                        <input class="form-control" type="text" placeholder="Tapez le nom de la sortie" aria-label="sortie">
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                    <p><strong>Date et heure de la sortie : </strong></p>
-                        <label for="dateDebut" class="form-label mt-2"></label>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <p class="mb-0" style="min-width: 200px;"><strong>Date et heure : </strong></p>
                         <input type="date" class="form-control" id="dateDebut" name="dateDebut" value="">
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                    <p><strong>Date limite d'inscription : </strong></p>
-                        <label for="dateDebut" class="form-label mt-2"></label>
-                        <input type="date" class="form-control" id="dateDebut" name="dateDebut" value="">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <p class="mb-0" style="min-width: 200px;"><strong>Date limite : </strong></p>
+                        <input type="date" class="form-control" id="dateLimite" name="dateLimite" value="">
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <p><strong>Nombre de places : </strong></p>
-                        <input class="form-control" type="text" aria-label="sortie">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <p class="mb-0" style="min-width: 200px;"><strong>Nombre de places : </strong></p>
+                        <input class="form-control" min="0" max="100" type="number" placeholder="Nombre de places" aria-label="nombrePlaces">
                     </div>
-                    <div data-mdb-input-init class="form-outline" style="width: 22rem;">
-                        <label class="form-label" for="typeNumber"><strong>Durée (en minutes)</strong></label>
-                        <input min="0" max="1000" type="number" id="typeNumber" class="form-control" />
+                    <div class="d-flex align-items-center gap-3">
+                        <p class="mb-0" style="min-width: 200px;"><strong>Durée (minutes) : </strong></p>
+                        <input min="0" max="1000" type="number" id="duree" class="form-control" />
                     </div>
                 </div>
 
                 <div class="col-md-6">
-                    <p><strong>Campus : </strong></p>
-                    <div class="d-flex align-items-center gap-2">
-                        <label for="lieu" class="form-label mb-0"><strong>Lieu</strong></label>
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <p class="mb-0" style="min-width: 200px;"><strong>Campus : </strong></p>
+                            <input class="form-control" type="text" placeholder="Adresse">
+                            </div>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <label for="lieu" class="mb-0" style="min-width: 200px;"><strong>Lieu :</strong></label>
                         <select id="lieu" name="lieu" class="form-select" aria-label="Choisis un lieu">
                             <option value="">Choisis un lieu</option>
                             {% for l in lieux %}
@@ -46,15 +47,24 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <p><strong>Rue : </strong></p>
-                    <p><strong>Code postal : </strong></p>
-                    <p><strong>Latitude / Longitude : </strong></p>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <p class="mb-0" style="min-width: 200px;"><strong>Rue : </strong></p>
+                        <input class="form-control" type="text" placeholder="Adresse">
+                    </div>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <p class="mb-0" style="min-width: 200px;"><strong>Code postal : </strong></p>
+                        <input class="form-control" type="text" placeholder="Code postal">
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <p class="mb-0" style="min-width: 200px;"><strong>Latitude / Longitude : </strong></p>
+                        <input class="form-control" type="text" placeholder="48.8566, 2.3522">
+                    </div>
                 </div>
             </div>
 
-            <div class="input-group">
-                <span class="input-group-text"><strong>Description et infos</strong></span>
-                <textarea class="form-control" aria-label="With textarea"></textarea>
+            <div class="input-group mb-5">
+                <p class="mb-0"><strong>Description et infos : </strong></p>
+                <textarea class="form-control" rows="8" aria-label="With textarea"></textarea>
             </div>
         <div class="d-flex justify-content-center gap-3">
             <a href="{{ path('app_user') }}" class="btn btn-primary btn-lg">Enregistrer</a>
