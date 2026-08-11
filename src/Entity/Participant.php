@@ -7,17 +7,29 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_PARTICIPANT_MAIL', fields: ['mail'])]
+#[ORM\UniqueConstraint(name: 'UNIQ_PARTICIPANT_PSEUDO', fields: ['pseudo'])]
 #[UniqueEntity(fields: ['mail'], message: 'Un compte existe déjà avec cette adresse mail.')]
-class Participant
+#[UniqueEntity(fields: ['pseudo'], message: 'Ce pseudo est déjà utilisé.')]
+class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column(length: 50, unique: true)]
+    #[Assert\NotBlank(message: 'Le pseudo est obligatoire.')]
+    #[Assert\Length(
+        min: 3,
+        max: 180
+    )]
+    private ?string $pseudo = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -32,6 +44,10 @@ class Participant
     #[Assert\NotBlank(message: 'L\'email est obligatoire.')]
     #[Assert\Email(message: 'L\'email n\'est pas valide.')]
     private ?string $mail = null;
+
+    #[ORM\Column]
+    #[Assert\NotBlank(message: 'Le mot de passe est obligatoire.')]
+    private ?string $password = null;
 
     #[ORM\Column]
     private ?bool $administrateur = null;
@@ -51,23 +67,66 @@ class Participant
     #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'organisateur', orphanRemoval: true)]
     private Collection $sortiesOrganisees;
 
+    #[ORM\ManyToOne(inversedBy: 'participants')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $campus = null;
+
     public function __construct()
     {
         $this->sorties = new ArrayCollection();
         $this->sortiesOrganisees = new ArrayCollection();
     }
 
-    #[ORM\ManyToOne(inversedBy: 'participants')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Campus $campus = null;
-
-    #[ORM\OneToOne(mappedBy: 'participant', cascade: ['persist', 'remove'])]
-    private ?User $user = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
+
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+
+    public function setPseudo(string $pseudo): static
+    {
+        $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->pseudo;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->administrateur ? ['ROLE_ADMIN'] : [];
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    public function eraseCredentials() : void
+    {
+    }
+
 
     public function getNom(): ?string
     {
@@ -116,6 +175,7 @@ class Participant
 
         return $this;
     }
+
 
     public function isAdministrateur(): ?bool
     {
@@ -206,23 +266,6 @@ class Participant
                 $sortiesOrganisee->setOrganisateur(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(User $user): static
-    {
-        // set the owning side of the relation if necessary
-        if ($user->getParticipant() !== $this) {
-            $user->setParticipant($this);
-        }
-
-        $this->user = $user;
 
         return $this;
     }

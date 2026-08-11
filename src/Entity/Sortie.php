@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Enum\Etat;
 use App\Repository\SortieRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,13 +21,13 @@ class Sortie
     private ?string $nom = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $dateHeureDebut = null;
+    private ?DateTimeImmutable $dateHeureDebut = null;
 
     #[ORM\Column]
     private ?int $duree = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $dateLimiteInscription = null;
+    private ?DateTimeImmutable $dateLimiteInscription = null;
 
     #[ORM\Column]
     private ?int $nbInscriptionMax = null;
@@ -101,12 +102,12 @@ class Sortie
         return $this;
     }
 
-    public function getDateLimiteInscription(): ?\DateTimeImmutable
+    public function getDateLimiteInscription(): ?DateTimeImmutable
     {
         return $this->dateLimiteInscription;
     }
 
-    public function setDateLimiteInscription(\DateTimeImmutable $dateLimiteInscription): static
+    public function setDateLimiteInscription(DateTimeImmutable $dateLimiteInscription): static
     {
         $this->dateLimiteInscription = $dateLimiteInscription;
 

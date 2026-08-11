@@ -6,6 +6,7 @@ use App\Entity\Sortie;
 use App\Repository\CampusRepository;
 use App\Repository\LieuRepository;
 use App\Repository\SortieRepository;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -88,7 +89,7 @@ final class SortieController extends AbstractController
 
         $campus = $campusRepository->findAll();
 
-        return $this->render('sortie/index.html.twig', [
+        return $this->render('sortie/index_sortie.html.twig', [
             'sorties' => $sorties,
             'campus' => $campus,
             'selectedCampusId' => $campusId,
