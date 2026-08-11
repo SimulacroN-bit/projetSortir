@@ -45,9 +45,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email(message: 'L\'email n\'est pas valide.')]
     private ?string $mail = null;
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
     #[Assert\NotBlank(message: 'Le mot de passe est obligatoire.')]
     private ?string $password = null;

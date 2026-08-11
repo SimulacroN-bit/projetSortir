@@ -7,20 +7,23 @@ use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Entity\Ville;
 use App\Enum\Etat;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Exception;
+use Faker\Factory;
 
 class SortieFixtures extends Fixture implements DependentFixtureInterface
 {
     use CampusReferenceTrait;
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function load(ObjectManager $manager): void
     {
-        $faker = \Faker\Factory::create('fr_FR');
+        $faker = Factory::create('fr_FR');
 
         //récupération des villes
         $villeRepo = $manager->getRepository(Ville::class);
@@ -53,8 +56,8 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
             $sortie = new Sortie();
             $sortie->setNom($activites[$i % count($activites)] . ' ' . ($i + 1));
             $daysFromNow = rand(-10, 30);
-            $sortie->setDateHeureDebut(new \DateTimeImmutable("+$daysFromNow days " . rand(9, 18) . ':00'));
-            $sortie->setDateLimiteInscription(new \DateTimeImmutable('+' . max(1, $daysFromNow - 3) . ' days'));
+            $sortie->setDateHeureDebut(new DateTimeImmutable("+$daysFromNow days " . rand(9, 18) . ':00'));
+            $sortie->setDateLimiteInscription(new DateTimeImmutable('+' . max(1, $daysFromNow - 3) . ' days'));
             $sortie->setDuree(rand(30, 480)); // durée en minutes (30 min à 8h)
             $sortie->setNbInscriptionMax(rand(5, 30));
             $sortie->setInfosSortie($faker->sentence());

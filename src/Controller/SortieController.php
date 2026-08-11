@@ -6,6 +6,7 @@ use App\Entity\Sortie;
 use App\Repository\CampusRepository;
 use App\Repository\LieuRepository;
 use App\Repository\SortieRepository;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,12 +40,12 @@ final class SortieController extends AbstractController
         }
 
         if ($dateDebut) {
-            $dateDebutObj = \DateTime::createFromFormat('Y-m-d', $dateDebut);
+            $dateDebutObj = DateTime::createFromFormat('Y-m-d', $dateDebut);
             $sorties = array_filter($sorties, fn($s) => $s->getDateHeureDebut() >= $dateDebutObj);
         }
 
         if ($dateFin) {
-            $dateFinObj = \DateTime::createFromFormat('Y-m-d', $dateFin);
+            $dateFinObj = DateTime::createFromFormat('Y-m-d', $dateFin);
             $sorties = array_filter($sorties, fn($s) => $s->getDateHeureDebut() <= $dateFinObj);
         }
 
