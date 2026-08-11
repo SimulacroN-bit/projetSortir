@@ -4,10 +4,11 @@ namespace App\DataFixtures;
 
 use App\Entity\Campus;
 use App\Entity\Participant;
-use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class ParticipantFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -15,41 +16,45 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
 
     public const PARTICIPANT_ADMIN_REFERENCE = 'participantAdmin_ref';
     public const PARTICIPANT_REFERENCE = 'participant-ref';
+    public const NB_PARTICIPANTS = 10;
+
+    public function __construct(private readonly UserPasswordHasherInterface $passwordHasher)
+    {
+    }
 
     public function load(ObjectManager $manager): void
     {
-        $faker = \Faker\Factory::create('fr_FR');
+        $faker = Factory::create('fr_FR');
 
         //Récupère tous les campus créés dans CampusFixture
         $campus = $this->getCampusReferences();
 
         //Participant Admin
-        $userAdmin = $this->getReference(UserFixtures::USER_ADMIN_REFERENCE, User::class);
+
         $participantAdmin = $this->createParticipant(
+            pseudo: 'admin',
+            plainPassword: '12345',
             nom: 'Admin',
             prenom: 'Super',
             telephone: '0600000000',
             mail: 'admin@sortir.com',
             administrateur: true,
-            campus:$campus[0],
-            user: $userAdmin,
+            campus: $campus[0],
         );
         $manager->persist($participantAdmin);
         $this->addReference(self::PARTICIPANT_ADMIN_REFERENCE, $participantAdmin);
 
         //Participant des utilisateurs lambda
-        for ($i = 1; $i < UserFixtures::NB_USERS; $i++) {
-            //Récupère l'utilisateur dans UserFixture
-            $user = $this->getReference(UserFixtures::USER_REFERENCE . $i, User::class);
-
+        for ($i = 1; $i < self::NB_PARTICIPANTS; $i++) {
             $participant = $this->createParticipant(
+                pseudo: $faker->userName,
+                plainPassword: 'abc123',
                 nom: $faker->lastName(),
                 prenom: $faker->firstName(),
                 telephone: '06' . str_pad(rand(10000000, 99999999), 8, '0', STR_PAD_LEFT),
-                mail: $faker->email(),
+                mail: $faker->unique()->email(),
                 administrateur: false,
                 campus: $campus[$i % count($campus)],
-                user: $user,
             );
             $manager->persist($participant);
             $this->addReference(self::PARTICIPANT_REFERENCE . $i, $participant);
@@ -61,16 +66,18 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
     //permet de créer un participant en indiquant toutes ces données et éviter de dupliquer du code pour les deux
     // instanciations de UserAdmin et User
     public function createParticipant(
+        string $pseudo,
+        string $plainPassword,
         string $nom,
         string $prenom,
         string $telephone,
         string $mail,
         bool $administrateur,
         Campus $campus,
-        User $user
     ): Participant
     {
         $participant = new Participant();
+        $participant->setPseudo($pseudo);
         $participant->setNom($nom);
         $participant->setPrenom($prenom);
         $participant->setTelephone($telephone);
@@ -78,7 +85,8 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
         $participant->setAdministrateur($administrateur);
         $participant->setActif(true);
         $participant->setCampus($campus);
-        $participant->setUser($user);
+        $participant->setPassword($this->passwordHasher->hashPassword($participant, $plainPassword));
+
 
         return $participant;
     }
@@ -86,7 +94,6 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
-            UserFixtures::class,
             CampusFixtures::class
         ];
     }

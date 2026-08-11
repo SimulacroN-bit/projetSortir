@@ -4,9 +4,9 @@ namespace App\Entity;
 
 use App\Enum\Etat;
 use App\Repository\SortieRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
@@ -21,13 +21,13 @@ class Sortie
     private ?string $nom = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $dateHeureDebut = null;
-
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTime $duree = null;
+    private ?DateTimeImmutable $dateHeureDebut = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $dateLimiteInscription = null;
+    private ?int $duree = null;
+
+    #[ORM\Column]
+    private ?DateTimeImmutable $dateLimiteInscription = null;
 
     #[ORM\Column]
     private ?int $nbInscriptionMax = null;
@@ -90,24 +90,24 @@ class Sortie
         return $this;
     }
 
-    public function getDuree(): ?\DateTime
+    public function getDuree(): ?int
     {
         return $this->duree;
     }
 
-    public function setDuree(\DateTime $duree): static
+    public function setDuree(int $duree): static
     {
         $this->duree = $duree;
 
         return $this;
     }
 
-    public function getDateLimiteInscription(): ?\DateTimeImmutable
+    public function getDateLimiteInscription(): ?DateTimeImmutable
     {
         return $this->dateLimiteInscription;
     }
 
-    public function setDateLimiteInscription(\DateTimeImmutable $dateLimiteInscription): static
+    public function setDateLimiteInscription(DateTimeImmutable $dateLimiteInscription): static
     {
         $this->dateLimiteInscription = $dateLimiteInscription;
 

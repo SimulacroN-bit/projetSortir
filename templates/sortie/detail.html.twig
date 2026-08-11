@@ -15,7 +15,7 @@
                     <p><strong>Date et heure de la sortie : </strong> {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</p>
                     <p><strong>Date limite d'inscription : </strong> {{ sortie.dateLimiteInscription|date('d/m/Y') }}</p>
                     <p><strong>Nombre de places : </strong> {{ sortie.participants|length }}/{{ sortie.nbInscriptionMax }}</p>
-                    <p><strong>Durée (en minutes) : </strong> {{ sortie.duree|date('H') * 60 + sortie.duree|date('i') }}</p>
+                    <p><strong>Durée (en minutes) : </strong> {{ sortie.duree }}</p>
                 </div>
                 <div class="col-md-6">
                     <p><strong>Campus : </strong> {{ sortie.campus.nom }}</p>
