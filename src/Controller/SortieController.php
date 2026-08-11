@@ -32,8 +32,8 @@ final class SortieController extends AbstractController
         $inscrit = $user ? $request->query->getBoolean('inscrit') : false;
         $nonInscrit = $user ? $request->query->getBoolean('nonInscrit') : false;
 
-        $dateDebutObj = $dateDebut ? \DateTime::createFromFormat('Y-m-d', $dateDebut) : null;
-        $dateFinObj = $dateFin ? \DateTime::createFromFormat('Y-m-d', $dateFin) : null;
+        $dateDebutObj = $dateDebut ? DateTime::createFromFormat('Y-m-d', $dateDebut) : null;
+        $dateFinObj = $dateFin ? DateTime::createFromFormat('Y-m-d', $dateFin) : null;
 
         $sorties = $sortieRepository->findByFilters(
             nom: $nomSortie ?: null,
