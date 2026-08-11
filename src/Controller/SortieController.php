@@ -98,7 +98,7 @@ final class SortieController extends AbstractController
 
         $campus = $campusRepository->findAll();
 
-        return $this->render('sortie/index.html.twig', [
+        return $this->render('sortie/index_sortie.html.twig', [
             'sorties' => $sorties,
             'campus' => $campus,
             'selectedCampusId' => $campusId,
