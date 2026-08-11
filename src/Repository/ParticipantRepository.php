@@ -22,14 +22,14 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
      */
-    public function upgradePassword(PasswordAuthenticatedUserInterface $participant, string $newHashedPassword): void
+    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
-        if (!$participant instanceof Participant) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $participant::class));
+        if (!$user instanceof Participant) {
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $user::class));
         }
 
-        $participant->setPassword($newHashedPassword);
-        $this->getEntityManager()->persist($participant);
+        $user->setPassword($newHashedPassword);
+        $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
     }
 
