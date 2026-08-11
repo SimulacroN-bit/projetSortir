@@ -19,29 +19,38 @@ class Sortie
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Assert\NotBlank(message: 'Le nom est obligatoire.')]
+    #[Assert\NotBlank(message: 'Le nom de la sortie est obligatoire.')]
     #[Assert\Length(
         min: 3,
-        max: 180
+        max: 180,
+        maxMessage: 'Le nom de la sortie ne peut pas dépasser {{ limit }} caractères.'
     )]
     private ?string $nom = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'La date et l\'heure de la sortie sont obligatoires.')]
+    #[Assert\NotNull(message: 'La date et l\'heure de la sortie sont obligatoires.')]
     private ?DateTimeImmutable $dateHeureDebut = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'La durée de la sortie est obligatoires.')]
+    #[Assert\Positive(message: 'La durée de la sortie doit être positive.')]
     private ?int $duree = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'La date limite d\'inscription est obligatoire.')]
+    #[Assert\NotNull(message: 'La date limite d\'inscription à la sortie est obligatoire.')]
     private ?DateTimeImmutable $dateLimiteInscription = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'Le nombre de places est obligatoire.')]
+    #[Assert\NotNull(message: 'Le nombre de places est obligatoire.')]
+    #[Assert\Positive(message: 'Le nombre de places doit être positif.')]
     private ?int $nbInscriptionMax = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        maxMessage: 'La description ne peut pas dépasser {{ limit }} caractères.'
+    )]
     private ?string $infosSortie = null;
 
     #[ORM\Column(enumType: Etat::class)]
@@ -49,6 +58,7 @@ class Sortie
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Le lieu est obligatoire.')]
     private ?Lieu $lieu = null;
 
     /**
@@ -60,15 +70,16 @@ class Sortie
     #[ORM\ManyToOne(inversedBy: 'sortiesOrganisees')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Participant $organisateur = null;
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Le campus est obligatoire.')]
+    private ?Campus $campus = null;
 
     public function __construct()
     {
         $this->participants = new ArrayCollection();
     }
 
-    #[ORM\ManyToOne(inversedBy: 'sorties')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Campus $campus = null;
 
     public function getId(): ?int
     {
