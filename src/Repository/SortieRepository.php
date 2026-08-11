@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Sortie;
-use DateTime;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,8 +17,8 @@ class SortieRepository extends ServiceEntityRepository
 
     public function findByFilters(
         ?string $nom = null,
-        ?DateTime $dateDebut = null,
-        ?DateTime $dateFin = null,
+        ?\DateTime $dateDebut = null,
+        ?\DateTime $dateFin = null,
         ?int $campusId = null,
     ): array {
         $qb = $this->createQueryBuilder('s');
