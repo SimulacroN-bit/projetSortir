@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -18,18 +19,26 @@ class Sortie
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire.')]
+    #[Assert\Length(
+        min: 3,
+        max: 180
+    )]
     private ?string $nom = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'La date et l\'heure de la sortie sont obligatoires.')]
     private ?DateTimeImmutable $dateHeureDebut = null;
 
     #[ORM\Column]
     private ?int $duree = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'La date limite d\'inscription est obligatoire.')]
     private ?DateTimeImmutable $dateLimiteInscription = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'Le nombre de places est obligatoire.')]
     private ?int $nbInscriptionMax = null;
 
     #[ORM\Column(length: 255, nullable: true)]
