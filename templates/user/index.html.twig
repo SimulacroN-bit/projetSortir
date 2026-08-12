@@ -120,7 +120,7 @@
                 </td>
                 <td>
                     <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Afficher</a>
-                {% if app.user and sortie.participants.contains(app.user)%}
+                {% if app.user %}
                     <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">S'inscrire</a>
                     <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Se désister</a>
                     <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Modifier</a>

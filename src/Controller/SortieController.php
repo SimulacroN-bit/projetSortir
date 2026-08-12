@@ -122,6 +122,39 @@ final class SortieController extends AbstractController
         ]);
     }
 
+    #[Route('/sortie/publish', name: 'app_sortie_publish', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function publish(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        LieuRepository $lieuRepository
+    ): Response {
+        $user = $this->getUser();
+        $sortie = new Sortie();
+        $sortie->setOrganisateur($user);
+        $sortie->setCampus($user->getCampus());
+        $sortie->setEtat(Etat::Ouverte);
+
+        $form = $this->createForm(SortieType::class, $sortie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $sortie->setOrganisateur($user);
+            $sortie->setCampus($user->getCampus());
+            $sortie->setEtat(Etat::Ouverte);
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_user');
+        }
+
+        $lieux = $lieuRepository->findAll();
+
+        return $this->render('sortie/create.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
     #[Route('/sortie/{id}', name: 'app_sortie_detail')]
     public function detail(Sortie $sortie): Response
     {
