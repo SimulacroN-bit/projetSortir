@@ -27,7 +27,7 @@ class ProfilType extends AbstractType
                 'choice_label' => 'nom',
                 'disabled' => true,
             ])
-            ->add('username', TextType::class, [
+            ->add('pseudo', TextType::class, [
                 'label' => 'Pseudo',
             ])
             ->add('prenom', TextType::class, [

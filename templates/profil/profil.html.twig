@@ -24,7 +24,7 @@
                 </div>
                 <div class="row mb-3 align-items-center">
                     <label class="col-4 profil-form-label">Pseudo : </label>
-                    <div class="col-8">{{ form_widget(profilForm.username, {'attr': {'class': 'form-control'}}) }}</div>
+                    <div class="col-8">{{ form_widget(profilForm.pseudo, {'attr': {'class': 'form-control'}}) }}</div>
                 </div>
                 <div class="row mb-3 align-items-center">
                     <label class="col-4 profil-form-label">Prénom : </label>
@@ -52,7 +52,7 @@
                 </div>
 
                 {# Affiche les erreurs de validation (pseudo pris, mots de passe différents, etc.) #}
-                {{ form_errors(profilForm.username) }}
+                {{ form_errors(profilForm.pseudo) }}
                 {{ form_errors(profilForm.plainPassword) }}
 
                 <div class="text-center mt-4">
