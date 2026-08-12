@@ -50,8 +50,9 @@ class SortieRepository extends ServiceEntityRepository
         }
 
         if ($organisateur && $user) {
-            $qb->andWhere('s.organisateur = :organisateur')
-                ->setParameter('organisateur', $user);
+            $userRef = $this->getEntityManager()->getReference(Participant::class, $user->getId());
+            $qb->andWhere('s.organisateur = :org')
+                ->setParameter('org', $userRef);
         }
 
         if ($inscrit && $user) {

@@ -31,9 +31,9 @@ final class SortieController extends AbstractController
         $dateFin = $request->query->get('dateFin');
         $termine = $request->query->getBoolean('termine');
 
-        $organisateur = $user ? $request->query->getBoolean('organisateur') : false;
-        $inscrit = $user ? $request->query->getBoolean('inscrit') : false;
-        $nonInscrit = $user ? $request->query->getBoolean('nonInscrit') : false;
+        $organisateur = $user && $request->query->has('organisateur');
+        $inscrit = $user && $request->query->has('inscrit');
+        $nonInscrit = $user && $request->query->has('nonInscrit');
 
         $dateDebutObj = $dateDebut ? DateTime::createFromFormat('Y-m-d', $dateDebut) : null;
         $dateFinObj = $dateFin ? DateTime::createFromFormat('Y-m-d', $dateFin) : null;
