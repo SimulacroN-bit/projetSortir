@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Sortie;
+use App\Enum\Etat;
+use App\Form\SortieType;
 use App\Repository\CampusRepository;
 use App\Repository\LieuRepository;
 use App\Repository\SortieRepository;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,23 +43,12 @@ final class SortieController extends AbstractController
             dateDebut: $dateDebutObj,
             dateFin: $dateFinObj,
             campusId: $campusId ? (int)$campusId : null,
+            user: $user,
+            organisateur: $organisateur,
+            inscrit: $inscrit,
+            nonInscrit: $nonInscrit,
+            termine: $termine,
         );
-
-        if ($organisateur && $user) {
-            $sorties = array_filter($sorties, fn($s) => $s->getOrganisateur() === $user);
-        }
-
-        if ($inscrit && $user) {
-            $sorties = array_filter($sorties, fn($s) => $s->getParticipants()->contains($user));
-        }
-
-        if ($nonInscrit && $user) {
-            $sorties = array_filter($sorties, fn($s) => !$s->getParticipants()->contains($user));
-        }
-
-        if ($termine) {
-            $sorties = array_filter($sorties, fn($s) => $s->getEtat()->value === 'Terminée');
-        }
 
         $campus = $campusRepository->findAll();
 
@@ -96,12 +88,31 @@ final class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/sortie/create', name: 'app_sortie_create')]
-    public function create(LieuRepository $lieuRepository): Response
-    {
+    #[Route('/sortie/create', name: 'app_sortie_create', methods: ['GET', 'POST'])]
+    public function create(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        LieuRepository $lieuRepository
+    ): Response {
+        $user = $this->getUser();
+        $sortie = new Sortie();
+        $sortie->setOrganisateur($user);
+        $sortie->setEtat(Etat::EnCreation);
+
+        $form = $this->createForm(SortieType::class, $sortie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_user');
+        }
+
         $lieux = $lieuRepository->findAll();
 
         return $this->render('sortie/create.html.twig', [
+            'form' => $form,
             'lieux' => $lieux,
         ]);
     }
