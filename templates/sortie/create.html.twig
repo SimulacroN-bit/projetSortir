@@ -1,136 +1,62 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ sortie.id ? 'Modifier une sortie' : 'Créer une sortie' }}{% endblock %}
+{% block title %}Créer une sortie{% endblock %}
 
 {% block body %}
-    <div class="container my-4">
-        <div class="card">
-            <div class="card-header bg-info text-white">
-                <h1 class="text-center"><strong>{{ sortie.id ? 'Modifier une sortie' : 'Créer une sortie' }}</strong></h1>
-            </div>
-            <div class="card-body">
-                {{ form_start(sortieForm) }}
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            {{ form_label(sortieForm.nom, null, {'label_attr': {'class': 'mb-0 fw-bold',
-                                'style':
-                                'min-width: 200px;'}}) }}
-                            {{ form_widget(sortieForm.nom, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-                        {{ form_errors(sortieForm.nom) }}
-
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            {{ form_label(sortieForm.dateHeureDebut, null, {'label_attr': {'class': 'mb-0 fw-bold',
-                                'style': 'min-width: 200px;'}}) }}
-                            {{ form_widget(sortieForm.dateHeureDebut, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-                        {{ form_errors(sortieForm.dateHeureDebut) }}
-
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            {{ form_label(sortieForm.dateLimiteInscription, null, {'label_attr': {'class': 'mb-0 fw-bold',
-                                'style': 'min-width: 200px;'}}) }}
-                            {{ form_widget(sortieForm.dateLimiteInscription, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-                        {{ form_errors(sortieForm.dateLimiteInscription) }}
-
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            {{ form_label(sortieForm.nbInscriptionMax, null, {'label_attr': {'class': 'mb-0 fw-bold',
-                                'style': 'min-width: 200px;'}}) }}
-                            {{ form_widget(sortieForm.nbInscriptionMax, {'attr': {'class': 'form-control', 'min': 0, 'max': 100}}) }}
-                        </div>
-                        {{ form_errors(sortieForm.nbInscriptionMax) }}
-
-                        <div class="d-flex align-items-center gap-3">
-                            {{ form_label(sortieForm.duree, null, {'label_attr': {'class': 'mb-0 fw-bold', 'style':
-                                'min-width: 200px;'}}) }}
-                            {{ form_widget(sortieForm.duree, {'attr': {'class': 'form-control', 'min': 0, 'max': 1000}}) }}
-                        </div>
-                        {{ form_errors(sortieForm.duree) }}
+<div class="container my-4">
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h1 class="text-center"><strong>Créer une sortie</strong></h1>
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        {{ form_label(form.nom, null, {'label_attr': {'style': 'min-width: 200px;'}}) }}
+                        {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Tapez le nom de la sortie'}}) }}
                     </div>
-
-                    <div class="col-md-6">
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            {{ form_label(sortieForm.campus, null, {'label_attr': {'class': 'mb-0 fw-bold', 'style':
-                                'min-width: 200px;'}}) }}
-                            {{ form_widget(sortieForm.campus, {'attr': {'class': 'form-select'}}) }}
-                        </div>
-
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            {{ form_label(sortieForm.lieu, null, {'label_attr': {'class': 'mb-0 fw-bold', 'style':
-                                'min-width: 200px;'}}) }}
-                            {{ form_widget(sortieForm.lieu, {'attr': {'class': 'form-select'}}) }}
-                        </div>
-                        {{ form_errors(sortieForm.lieu) }}
-
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            <label for="lieu-rue" class="mb-0" style="min-width: 200px;"><strong>Rue : </strong></label>
-                            <input class="form-control" type="text" id="lieu-rue" readonly>
-                        </div>
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            <label for="lieu-code-postal" class="mb-0" style="min-width: 200px;"><strong>Code postal
-                                    : </strong></label>
-                            <input class="form-control" type="text" id="lieu-code-postal" readonly>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <label for="lieu-latlng" class="mb-0" style="min-width: 200px;"><strong>Latitude/Longitude: </strong></label>
-                            <input class="form-control" type="text" id="lieu-latlng" readonly>
-                        </div>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        {{ form_label(form.dateHeureDebut, null, {'label_attr': {'style': 'min-width: 200px;'}}) }}
+                        {{ form_widget(form.dateHeureDebut, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        {{ form_label(form.dateLimiteInscription, null, {'label_attr': {'style': 'min-width: 200px;'}}) }}
+                        {{ form_widget(form.dateLimiteInscription, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        {{ form_label(form.nbInscriptionMax, null, {'label_attr': {'style': 'min-width: 200px;'}}) }}
+                        {{ form_widget(form.nbInscriptionMax, {'attr': {'class': 'form-control', 'min': '0', 'max': '100'}}) }}
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        {{ form_label(form.duree, null, {'label_attr': {'style': 'min-width: 200px;'}}) }}
+                        {{ form_widget(form.duree, {'attr': {'class': 'form-control', 'min': '0', 'max': '1000'}}) }}
                     </div>
                 </div>
 
-                <div class="input-group mb-5">
-                    <p class="mb-0"><strong>Description et infos : </strong></p>
-                    {{ form_widget(sortieForm.infosSortie, {'attr': {'class': 'form-control', 'rows': 8}}) }}
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        {{ form_label(form.campus, null, {'label_attr': {'style': 'min-width: 200px;'}}) }}
+                        {{ form_widget(form.campus, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        {{ form_label(form.lieu, null, {'label_attr': {'style': 'min-width: 200px;'}}) }}
+                        {{ form_widget(form.lieu, {'attr': {'class': 'form-select'}}) }}
+                    </div>
                 </div>
-                {{ form_errors(sortieForm.infosSortie) }}
-
-                <div class="d-flex justify-content-center gap-3">
-                    <button type="submit" name="action" value="enregistrer" class="btn btn-primary btn-lg">Enregistrer</button>
-                    <button type="submit" name="action" value="publier" class="btn btn-outline-secondary btn-lg">Publier</button>
-                    <a href="{{ path('app_user') }}" class="btn btn-secondary btn-lg">Retour à la liste</a>
-                </div>
-                {{ form_end(sortieForm) }}
             </div>
+
+            <div class="input-group mb-5">
+                {{ form_label(form.infosSortie) }}
+                {{ form_widget(form.infosSortie, {'attr': {'class': 'form-control', 'rows': '8'}}) }}
+            </div>
+        <div class="d-flex justify-content-center gap-3">
+            <button type="submit" formaction="{{ path('app_sortie_create') }}" class="btn btn-primary btn-lg">Enregistrer</button>
+            <button type="submit" formaction="{{ path('app_sortie_publish') }}" class="btn btn-outline-secondary btn-lg">Publier</button>
+            <a href="{{ path('app_user') }}" class="btn btn-secondary btn-lg">Retour à la liste</a>
+        </div>
+            {{ form_end(form) }}
         </div>
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            /** @type {HTMLSelectElement} */
-            const lieuSelect = document.getElementById('{{ sortieForm.lieu.vars.id }}');
-            const rueField = document.getElementById('lieu-rue');
-            const codePostalField = document.getElementById('lieu-code-postal');
-            const latLngField = document.getElementById('lieu-latlng');
-
-            if (!lieuSelect) return;
-
-            function updateLieuFields() {
-                const selectedOption = lieuSelect.options[lieuSelect.selectedIndex];
-
-                if (!selectedOption || !selectedOption.value) {
-                    rueField.value = '';
-                    codePostalField.value = '';
-                    latLngField.value = '';
-                    return;
-                }
-
-                // Accès aux données data-* via dataset
-                rueField.value = selectedOption.dataset.rue || '';
-                codePostalField.value = selectedOption.dataset.codePostal || '';
-
-                const lat = selectedOption.dataset.latitude;
-                const lng = selectedOption.dataset.longitude;
-                latLngField.value = (lat && lng) ? `${lat} / ${lng}` : '';
-            }
-
-            lieuSelect.addEventListener('change', updateLieuFields);
-
-            // Déclenchement initial au chargement de la page (utile en mode édition)
-            updateLieuFields();
-        });
-    </script>
+</div>
 {% endblock %}

@@ -107,7 +107,7 @@
                 <td>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</td>
                 <td>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
                 <td>{{ sortie.participants|length }}/{{ sortie.nbInscriptionMax }}</td>
-                <td>{{ sortie.etatAffichage.value }}</td>
+                <td>{{ sortie.etat.value }}</td>
                 <td>
                     {% if app.user and sortie.participants.contains(app.user) %}
                         X
@@ -119,33 +119,23 @@
                     </a>
                 </td>
                 <td>
-                    <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Afficher</a>
-
-                    {# Bloc organisateur #}
-                    {% if app.user and sortie.organisateur == app.user %}
-                        {% if sortie.etatAffichage.value == 'En création' %}
-                            <a href="{{ path('app_sortie_update', {'id': sortie.id}) }}" class="btn btn-sm
-                            btn-outline-primary">Modifier</a>
-                            <a href="{{ path('app_sortie_update', {'id': sortie.id}) }}" class="btn btn-sm
-                            btn-outline-primary">Publier</a>
-                            <form method="post" action="{{ path('app_sortie_delete', {'id': sortie.id}) }}"
-                                  class="d-inline" onsubmit="return confirm('Confirmer la suppression ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete-sortie-' ~ sortie.id) }}">
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+                    {% if app.user and sortie.organisateur.id == app.user.id %}
+                        <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Afficher</a>
+                        <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Modifier</a>
+                        {% if sortie.etat.value == 'En création' %}
+                            <form method="POST" action="{{ path('app_sortie_publish', {'id': sortie.id}) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-outline-success">Publier</button>
                             </form>
-                        {% elseif sortie.etatAffichage.value in ['Ouverte', 'Clôturée'] %}
-                            <a href="{{ path('app_sortie_cancel', {'id': sortie.id}) }}" class="btn btn-sm
-                            btn-outline-primary">Annuler</a>
                         {% endif %}
-                   {% endif %}
-
-                    {# Bloc inscription #}
-                    {% if app.user and sortie.etatAffichage.value == 'Ouverte' %}
-                        {% if sortie.participants.contains(app.user) %}
-                            <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Se désister</a>
-                        {% else %}
-                            <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">S'inscrire</a>
-                        {% endif %}
+                        <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-danger">Supprimer</a>
+                        <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-warning">Annuler</a>
+                    {% elseif app.user and sortie.participants.contains(app.user) %}
+                        <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Afficher</a>
+                        <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-danger">Se désister</a>
+                    {% elseif app.user %}
+                        <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">S'inscrire</a>
+                    {% else %}
+                        <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Afficher</a>
                     {% endif %}
                 </td>
             </tr>
