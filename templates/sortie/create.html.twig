@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Créer une sortie{% endblock %}
+{% block title %}{{ isEdit ? 'Modifier une sortie' : 'Créer une sortie' }}{% endblock %}
 
 {% block body %}
 <div class="container my-4">
     <div class="card">
         <div class="card-header bg-info text-white">
-            <h1 class="text-center"><strong>Créer une sortie</strong></h1>
+            <h1 class="text-center"><strong>{{ isEdit ? 'Modifier une sortie' : 'Créer une sortie' }}</strong></h1>
         </div>
         <div class="card-body">
             {{ form_start(form) }}
@@ -51,8 +51,12 @@
                 {{ form_widget(form.infosSortie, {'attr': {'class': 'form-control', 'rows': '8'}}) }}
             </div>
         <div class="d-flex justify-content-center gap-3">
-            <button type="submit" formaction="{{ path('app_sortie_create') }}" class="btn btn-primary btn-lg">Enregistrer</button>
-            <button type="submit" formaction="{{ path('app_sortie_publish') }}" class="btn btn-outline-secondary btn-lg">Publier</button>
+            {% if isEdit %}
+                <button type="submit" formaction="{{ path('app_sortie_edit', {'id': sortie.id}) }}" class="btn btn-primary btn-lg">Enregistrer</button>
+            {% else %}
+                <button type="submit" name="save" class="btn btn-primary btn-lg">Enregistrer</button>
+                <button type="submit" name="publish" class="btn btn-outline-secondary btn-lg">Publier</button>
+            {% endif %}
             <a href="{{ path('app_user') }}" class="btn btn-secondary btn-lg">Retour à la liste</a>
         </div>
             {{ form_end(form) }}

@@ -121,8 +121,8 @@
                 <td>
                     {% if app.user and sortie.organisateur.id == app.user.id %}
                         <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Afficher</a>
-                        <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Modifier</a>
                         {% if sortie.etat.value == 'En création' %}
+                            <a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Modifier</a>
                             <form method="POST" action="{{ path('app_sortie_publish', {'id': sortie.id}) }}" style="display:inline;">
                                 <button type="submit" class="btn btn-sm btn-outline-success">Publier</button>
                             </form>

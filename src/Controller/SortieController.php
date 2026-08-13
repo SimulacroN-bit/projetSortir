@@ -112,6 +112,11 @@ final class SortieController extends AbstractController
             $entityManager->persist($sortie);
             $entityManager->flush();
 
+            if ($request->request->has('publish')) {
+                $sortie->setEtat(Etat::Ouverte);
+                $entityManager->flush();
+            }
+
             return $this->redirectToRoute('app_user');
         }
 
@@ -119,6 +124,8 @@ final class SortieController extends AbstractController
 
         return $this->render('sortie/create.html.twig', [
             'form' => $form,
+            'sortie' => $sortie,
+            'isEdit' => false,
         ]);
     }
 
@@ -142,6 +149,41 @@ final class SortieController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('app_user');
+    }
+
+    #[Route('/sortie/{id}/edit', name: 'app_sortie_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function edit(
+        Sortie $sortie,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        LieuRepository $lieuRepository
+    ): Response {
+        $user = $this->getUser();
+
+        if ($sortie->getOrganisateur() !== $user) {
+            throw $this->createAccessDeniedException('Seul l\'organisateur peut modifier cette sortie.');
+        }
+
+        if ($sortie->getEtat() !== Etat::EnCreation) {
+            throw $this->createAccessDeniedException('Seules les sorties en création peuvent être modifiées.');
+        }
+
+        $form = $this->createForm(SortieType::class, $sortie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            return $this->redirectToRoute('app_user');
+        }
+
+        $lieux = $lieuRepository->findAll();
+
+        return $this->render('sortie/create.html.twig', [
+            'form' => $form,
+            'sortie' => $sortie,
+            'isEdit' => true,
+        ]);
     }
 
     #[Route('/sortie/{id}', name: 'app_sortie_detail')]
