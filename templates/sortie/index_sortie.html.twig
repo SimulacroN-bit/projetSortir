@@ -117,7 +117,13 @@
                     </a>
                 </td>
                 <td>
-                    <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Afficher</a>
+                    {% if app.user and sortie.organisateur.id == app.user.id and sortie.etat.value == 'En création' %}
+                        <form method="POST" action="{{ path('app_sortie_publish', {'id': sortie.id}) }}" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-outline-success">Publier</button>
+                        </form>
+                    {% else %}
+                        <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Afficher</a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
