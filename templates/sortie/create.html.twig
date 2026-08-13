@@ -1,76 +1,136 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Créer une sortie{% endblock %}
+{% block title %}{{ sortie.id ? 'Modifier une sortie' : 'Créer une sortie' }}{% endblock %}
 
 {% block body %}
-<div class="container my-4">
-    <div class="card">
-        <div class="card-header bg-info text-white">
-            <h1 class="text-center"><strong>Créer une sortie</strong></h1>
-        </div>
-        <div class="card-body">
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <p class="mb-0" style="min-width: 200px;"><strong>Nom de la sortie : </strong></p>
-                        <input class="form-control" type="text" placeholder="Tapez le nom de la sortie" aria-label="sortie">
-                    </div>
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <p class="mb-0" style="min-width: 200px;"><strong>Date et heure : </strong></p>
-                        <input type="datetime-local" class="form-control" id="dateDebut" name="dateDebut" value="">
-                    </div>
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <p class="mb-0" style="min-width: 200px;"><strong>Date limite : </strong></p>
-                        <input type="date" class="form-control" id="dateLimite" name="dateLimite" value="">
-                    </div>
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <p class="mb-0" style="min-width: 200px;"><strong>Nombre de places : </strong></p>
-                        <input class="form-control" min="0" max="100" type="number" placeholder="Nombre de places" aria-label="nombrePlaces">
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <p class="mb-0" style="min-width: 200px;"><strong>Durée (minutes) : </strong></p>
-                        <input min="0" max="1000" type="number" id="duree" class="form-control" />
-                    </div>
-                </div>
-
-                <div class="col-md-6">
+    <div class="container my-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h1 class="text-center"><strong>{{ sortie.id ? 'Modifier une sortie' : 'Créer une sortie' }}</strong></h1>
+            </div>
+            <div class="card-body">
+                {{ form_start(sortieForm) }}
+                <div class="row mb-3">
+                    <div class="col-md-6">
                         <div class="d-flex align-items-center gap-3 mb-3">
-                            <p class="mb-0" style="min-width: 200px;"><strong>Campus : </strong></p>
-                            <input class="form-control" type="text" placeholder="Adresse">
-                            </div>
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <label for="lieu" class="mb-0" style="min-width: 200px;"><strong>Lieu :</strong></label>
-                        <select id="lieu" name="lieu" class="form-select" aria-label="Choisis un lieu">
-                            <option value="">Choisis un lieu</option>
-                            {% for l in lieux %}
-                                <option value="{{ l.id }}">{{ l.nom }}</option>
-                            {% endfor %}
-                        </select>
+                            {{ form_label(sortieForm.nom, null, {'label_attr': {'class': 'mb-0 fw-bold',
+                                'style':
+                                'min-width: 200px;'}}) }}
+                            {{ form_widget(sortieForm.nom, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        {{ form_errors(sortieForm.nom) }}
+
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            {{ form_label(sortieForm.dateHeureDebut, null, {'label_attr': {'class': 'mb-0 fw-bold',
+                                'style': 'min-width: 200px;'}}) }}
+                            {{ form_widget(sortieForm.dateHeureDebut, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        {{ form_errors(sortieForm.dateHeureDebut) }}
+
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            {{ form_label(sortieForm.dateLimiteInscription, null, {'label_attr': {'class': 'mb-0 fw-bold',
+                                'style': 'min-width: 200px;'}}) }}
+                            {{ form_widget(sortieForm.dateLimiteInscription, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        {{ form_errors(sortieForm.dateLimiteInscription) }}
+
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            {{ form_label(sortieForm.nbInscriptionMax, null, {'label_attr': {'class': 'mb-0 fw-bold',
+                                'style': 'min-width: 200px;'}}) }}
+                            {{ form_widget(sortieForm.nbInscriptionMax, {'attr': {'class': 'form-control', 'min': 0, 'max': 100}}) }}
+                        </div>
+                        {{ form_errors(sortieForm.nbInscriptionMax) }}
+
+                        <div class="d-flex align-items-center gap-3">
+                            {{ form_label(sortieForm.duree, null, {'label_attr': {'class': 'mb-0 fw-bold', 'style':
+                                'min-width: 200px;'}}) }}
+                            {{ form_widget(sortieForm.duree, {'attr': {'class': 'form-control', 'min': 0, 'max': 1000}}) }}
+                        </div>
+                        {{ form_errors(sortieForm.duree) }}
                     </div>
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <p class="mb-0" style="min-width: 200px;"><strong>Rue : </strong></p>
-                        <input class="form-control" type="text" placeholder="Adresse">
-                    </div>
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <p class="mb-0" style="min-width: 200px;"><strong>Code postal : </strong></p>
-                        <input class="form-control" type="text" placeholder="Code postal">
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <p class="mb-0" style="min-width: 200px;"><strong>Latitude / Longitude : </strong></p>
-                        <input class="form-control" type="text" placeholder="48.8566, 2.3522">
+
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            {{ form_label(sortieForm.campus, null, {'label_attr': {'class': 'mb-0 fw-bold', 'style':
+                                'min-width: 200px;'}}) }}
+                            {{ form_widget(sortieForm.campus, {'attr': {'class': 'form-select'}}) }}
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            {{ form_label(sortieForm.lieu, null, {'label_attr': {'class': 'mb-0 fw-bold', 'style':
+                                'min-width: 200px;'}}) }}
+                            {{ form_widget(sortieForm.lieu, {'attr': {'class': 'form-select'}}) }}
+                        </div>
+                        {{ form_errors(sortieForm.lieu) }}
+
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <label for="lieu-rue" class="mb-0" style="min-width: 200px;"><strong>Rue : </strong></label>
+                            <input class="form-control" type="text" id="lieu-rue" readonly>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <label for="lieu-code-postal" class="mb-0" style="min-width: 200px;"><strong>Code postal
+                                    : </strong></label>
+                            <input class="form-control" type="text" id="lieu-code-postal" readonly>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <label for="lieu-latlng" class="mb-0" style="min-width: 200px;"><strong>Latitude/Longitude: </strong></label>
+                            <input class="form-control" type="text" id="lieu-latlng" readonly>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="input-group mb-5">
-                <p class="mb-0"><strong>Description et infos : </strong></p>
-                <textarea class="form-control" rows="8" aria-label="With textarea"></textarea>
+                <div class="input-group mb-5">
+                    <p class="mb-0"><strong>Description et infos : </strong></p>
+                    {{ form_widget(sortieForm.infosSortie, {'attr': {'class': 'form-control', 'rows': 8}}) }}
+                </div>
+                {{ form_errors(sortieForm.infosSortie) }}
+
+                <div class="d-flex justify-content-center gap-3">
+                    <button type="submit" name="action" value="enregistrer" class="btn btn-primary btn-lg">Enregistrer</button>
+                    <button type="submit" name="action" value="publier" class="btn btn-outline-secondary btn-lg">Publier</button>
+                    <a href="{{ path('app_user') }}" class="btn btn-secondary btn-lg">Retour à la liste</a>
+                </div>
+                {{ form_end(sortieForm) }}
             </div>
-        <div class="d-flex justify-content-center gap-3">
-            <a href="{{ path('app_user') }}" class="btn btn-primary btn-lg">Enregistrer</a>
-            <a href="{{ path('app_user') }}" class="btn btn-outline-secondary btn-lg">Publier</a>
-            <a href="{{ path('app_user') }}" class="btn btn-secondary btn-lg">Retour à la liste</a>
         </div>
     </div>
-</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            /** @type {HTMLSelectElement} */
+            const lieuSelect = document.getElementById('{{ sortieForm.lieu.vars.id }}');
+            const rueField = document.getElementById('lieu-rue');
+            const codePostalField = document.getElementById('lieu-code-postal');
+            const latLngField = document.getElementById('lieu-latlng');
+
+            if (!lieuSelect) return;
+
+            function updateLieuFields() {
+                const selectedOption = lieuSelect.options[lieuSelect.selectedIndex];
+
+                if (!selectedOption || !selectedOption.value) {
+                    rueField.value = '';
+                    codePostalField.value = '';
+                    latLngField.value = '';
+                    return;
+                }
+
+                // Accès aux données data-* via dataset
+                rueField.value = selectedOption.dataset.rue || '';
+                codePostalField.value = selectedOption.dataset.codePostal || '';
+
+                const lat = selectedOption.dataset.latitude;
+                const lng = selectedOption.dataset.longitude;
+                latLngField.value = (lat && lng) ? `${lat} / ${lng}` : '';
+            }
+
+            lieuSelect.addEventListener('change', updateLieuFields);
+
+            // Déclenchement initial au chargement de la page (utile en mode édition)
+            updateLieuFields();
+        });
+    </script>
 {% endblock %}
