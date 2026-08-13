@@ -52,26 +52,26 @@
                         <div class="col-md-4 align-items-center">
                             {% if app.user %}
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="organisateur" value="1" id="flexCheckDefault1">
+                                    <input class="form-check-input" type="checkbox" name="organisateur" value="1" id="flexCheckDefault1" {% if filters.organisateur %}checked{% endif %}>
                                     <label class="form-check-label" for="flexCheckDefault1">
                                         Sorties dont je suis l'organisateur/rice
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="inscrit" value="1" id="flexCheckDefault2">
+                                    <input class="form-check-input" type="checkbox" name="inscrit" value="1" id="flexCheckDefault2" {% if filters.inscrit %}checked{% endif %}>
                                     <label class="form-check-label" for="flexCheckDefault2">
                                         Sorties auxquelles je suis inscrit/e
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="nonInscrit" value="1" id="flexCheckDefault3">
+                                    <input class="form-check-input" type="checkbox" name="nonInscrit" value="1" id="flexCheckDefault3" {% if filters.nonInscrit %}checked{% endif %}>
                                     <label class="form-check-label" for="flexCheckDefault3">
                                         Sorties auxquelles je ne suis pas inscrit/e
                                     </label>
                                 </div>
                             {% endif %}
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="termine" value="1" id="flexCheckDefault4">
+                                <input class="form-check-input" type="checkbox" name="termine" value="1" id="flexCheckDefault4" {% if filters.termine %}checked{% endif %}>
                                 <label class="form-check-label" for="flexCheckDefault4">
                                     Sorties terminées
                                 </label>
@@ -120,14 +120,33 @@
                 </td>
                 <td>
                     <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Afficher</a>
-                {% if app.user and sortie.participants.contains(app.user)%}
-                    <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">S'inscrire</a>
-                    <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Se désister</a>
-                    <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Modifier</a>
-                    <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Publier</a>
-                    <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Supprimer</a>
-                    <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Annuler</a>
-                {% endif %}
+
+                    {# Bloc organisateur #}
+                    {% if app.user and sortie.organisateur == app.user %}
+                        {% if sortie.etat.value == 'En création' %}
+                            <a href="{{ path('app_sortie_update', {'id': sortie.id}) }}" class="btn btn-sm
+                            btn-outline-primary">Modifier</a>
+                            <a href="{{ path('app_sortie_update', {'id': sortie.id}) }}" class="btn btn-sm
+                            btn-outline-primary">Publier</a>
+                            <form method="post" action="{{ path('app_sortie_detail', {'id': sortie.id}) }}"
+                                  class="d-inline" onsubmit="return confirm('Confirmer la suppression ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete-sortie-' ~ sortie.id) }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+                            </form>
+                        {% elseif sortie.etat.value in ['Ouverte', 'Clôturée'] %}
+                            <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm
+                            btn-outline-primary">Annuler</a>
+                        {% endif %}
+                    {% endif %}
+
+                    {# Bloc inscription #}
+                    {% if app.user and sortie.etat.value == 'Ouverte' %}
+                        {% if sortie.participants.contains(app.user) %}
+                            <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Se désister</a>
+                        {% else %}
+                            <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">S'inscrire</a>
+                        {% endif %}
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
