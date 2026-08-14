@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annuler une sortie{% endblock %}
+
+{% block body %}
+    <div class="container my-4">
+        <div class="card shadow-lg">
+            <div class="card-header bg-danger text-white">
+                <h1 class="text-center"><strong>Annuler la sortie "{{ sortie.nom }}"</strong></h1>
+            </div>
+            <div class="card-body">
+                {{ form_start(annulationForm) }}
+                    {{ form_row(annulationForm.motifAnnulation) }}
+
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <button type="submit" class="btn btn-danger btn-lg">Confirmer l'annulation</button>
+                    <a href="{{ path('app_user') }}" class="btn btn-secondary btn-lg">Retour à la liste</a>
+                </div>
+                {{ form_end(annulationForm) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
