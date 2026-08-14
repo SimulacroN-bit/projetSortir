@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route("/mon-profil")]
 final class ProfilController extends AbstractController
@@ -22,6 +23,7 @@ final class ProfilController extends AbstractController
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordHasher,
         ParticipantRepository $participantRepository,
+        SluggerInterface $slugger,
     ): Response {
         /** @var Participant|null $participant */
         $participant = $this->getUser();
@@ -61,6 +63,16 @@ final class ProfilController extends AbstractController
             if ($plainPassword){
                 $hashedPassword = $passwordHasher->hashPassword($participant, $plainPassword);
                 $participant->setPassword($hashedPassword);
+            }
+
+            //Traitement du fichier photo
+            $photoFile = $profilForm->get('photo')->getData();
+            if ($photoFile) {
+                $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$photoFile->guessExtension();
+                $photoFile->move($this->getParameter('kernel.project_dir').'/public/uploads/photos', $newFilename);
+                $participant->setPhoto($newFilename);
             }
 
             //sauvegarde en bdd

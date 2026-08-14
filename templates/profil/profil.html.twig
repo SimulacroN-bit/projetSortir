@@ -17,6 +17,11 @@
             {# Colonne centrale : formulaire #}
                 <h4 class="text-center fw-bold">Mon profil</h4>
             </div>
+            {% if participant.photo %}
+                <div class="text-center mb-3">
+                    <img src="/uploads/photos/{{ participant.photo }}" alt="Photo profil" class="img-thumbnail" style="max-width: 400px;">
+                </div>
+            {% endif %}
                 {{ form_start(profilForm) }}
                 <div class="row mb-3 align-items-center">
                     <label class="col-4 profil-form-label">Campus : </label>
@@ -50,6 +55,10 @@
                     <label class="col-4 profil-form-label">Confirmation : </label>
                     <div class="col-8">{{ form_widget(profilForm.plainPassword.second, {'attr': {'class': 'form-control'}}) }}</div>
                 </div>
+                <div class="row mb-3 align-items-center">
+                    <label class="col-4 profil-form-label">Ma photo : </label>
+                    <div class="col-8">{{ form_widget(profilForm.photo, {'attr': {'class': 'form-control'}}) }}</div>
+                </div>
 
                 {# Affiche les erreurs de validation (pseudo pris, mots de passe différents, etc.) #}
                 {{ form_errors(profilForm.pseudo) }}
@@ -60,7 +69,6 @@
                 </div>
                 {{ form_end(profilForm) }}
             </div>
-
         </div>
     </div>
 {% endblock %}
