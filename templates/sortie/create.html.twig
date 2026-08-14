@@ -1,65 +1,75 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ isEdit ? 'Modifier une sortie' : 'Créer une sortie' }}{% endblock %}
+{% block title %}Créer une sortie{% endblock %}
 
 {% block body %}
 <div class="container my-4">
     <div class="card">
         <div class="card-header bg-info text-white">
-            <h1 class="text-center"><strong>{{ isEdit ? 'Modifier une sortie' : 'Créer une sortie' }}</strong></h1>
+            <h1 class="text-center"><strong>Créer une sortie</strong></h1>
         </div>
         <div class="card-body">
-            {{ form_start(form) }}
             <div class="row mb-3">
                 <div class="col-md-6">
                     <div class="d-flex align-items-center gap-3 mb-3">
-                        {{ form_label(form.nom, null, {'label_attr': {'style': 'min-width: 200px;'}}) }}
-                        {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Tapez le nom de la sortie'}}) }}
+                        <p class="mb-0" style="min-width: 200px;"><strong>Nom de la sortie : </strong></p>
+                        <input class="form-control" type="text" placeholder="Tapez le nom de la sortie" aria-label="sortie">
                     </div>
                     <div class="d-flex align-items-center gap-3 mb-3">
-                        {{ form_label(form.dateHeureDebut, null, {'label_attr': {'style': 'min-width: 200px;'}}) }}
-                        {{ form_widget(form.dateHeureDebut, {'attr': {'class': 'form-control'}}) }}
+                        <p class="mb-0" style="min-width: 200px;"><strong>Date et heure : </strong></p>
+                        <input type="datetime-local" class="form-control" id="dateDebut" name="dateDebut" value="">
                     </div>
                     <div class="d-flex align-items-center gap-3 mb-3">
-                        {{ form_label(form.dateLimiteInscription, null, {'label_attr': {'style': 'min-width: 200px;'}}) }}
-                        {{ form_widget(form.dateLimiteInscription, {'attr': {'class': 'form-control'}}) }}
+                        <p class="mb-0" style="min-width: 200px;"><strong>Date limite : </strong></p>
+                        <input type="date" class="form-control" id="dateLimite" name="dateLimite" value="">
                     </div>
                     <div class="d-flex align-items-center gap-3 mb-3">
-                        {{ form_label(form.nbInscriptionMax, null, {'label_attr': {'style': 'min-width: 200px;'}}) }}
-                        {{ form_widget(form.nbInscriptionMax, {'attr': {'class': 'form-control', 'min': '0', 'max': '100'}}) }}
+                        <p class="mb-0" style="min-width: 200px;"><strong>Nombre de places : </strong></p>
+                        <input class="form-control" min="0" max="100" type="number" placeholder="Nombre de places" aria-label="nombrePlaces">
                     </div>
                     <div class="d-flex align-items-center gap-3">
-                        {{ form_label(form.duree, null, {'label_attr': {'style': 'min-width: 200px;'}}) }}
-                        {{ form_widget(form.duree, {'attr': {'class': 'form-control', 'min': '0', 'max': '1000'}}) }}
+                        <p class="mb-0" style="min-width: 200px;"><strong>Durée (minutes) : </strong></p>
+                        <input min="0" max="1000" type="number" id="duree" class="form-control" />
                     </div>
                 </div>
 
                 <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <p class="mb-0" style="min-width: 200px;"><strong>Campus : </strong></p>
+                            <input class="form-control" type="text" placeholder="Adresse">
+                            </div>
                     <div class="d-flex align-items-center gap-3 mb-3">
-                        {{ form_label(form.campus, null, {'label_attr': {'style': 'min-width: 200px;'}}) }}
-                        {{ form_widget(form.campus, {'attr': {'class': 'form-control'}}) }}
+                        <label for="lieu" class="mb-0" style="min-width: 200px;"><strong>Lieu :</strong></label>
+                        <select id="lieu" name="lieu" class="form-select" aria-label="Choisis un lieu">
+                            <option value="">Choisis un lieu</option>
+                            {% for l in lieux %}
+                                <option value="{{ l.id }}">{{ l.nom }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="d-flex align-items-center gap-3 mb-3">
-                        {{ form_label(form.lieu, null, {'label_attr': {'style': 'min-width: 200px;'}}) }}
-                        {{ form_widget(form.lieu, {'attr': {'class': 'form-select'}}) }}
+                        <p class="mb-0" style="min-width: 200px;"><strong>Rue : </strong></p>
+                        <input class="form-control" type="text" placeholder="Adresse">
+                    </div>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <p class="mb-0" style="min-width: 200px;"><strong>Code postal : </strong></p>
+                        <input class="form-control" type="text" placeholder="Code postal">
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <p class="mb-0" style="min-width: 200px;"><strong>Latitude / Longitude : </strong></p>
+                        <input class="form-control" type="text" placeholder="48.8566, 2.3522">
                     </div>
                 </div>
             </div>
 
             <div class="input-group mb-5">
-                {{ form_label(form.infosSortie) }}
-                {{ form_widget(form.infosSortie, {'attr': {'class': 'form-control', 'rows': '8'}}) }}
+                <p class="mb-0"><strong>Description et infos : </strong></p>
+                <textarea class="form-control" rows="8" aria-label="With textarea"></textarea>
             </div>
         <div class="d-flex justify-content-center gap-3">
-            {% if isEdit %}
-                <button type="submit" formaction="{{ path('app_sortie_edit', {'id': sortie.id}) }}" class="btn btn-primary btn-lg">Enregistrer</button>
-            {% else %}
-                <button type="submit" name="save" class="btn btn-primary btn-lg">Enregistrer</button>
-                <button type="submit" name="publish" class="btn btn-outline-secondary btn-lg">Publier</button>
-            {% endif %}
+            <a href="{{ path('app_user') }}" class="btn btn-primary btn-lg">Enregistrer</a>
+            <a href="{{ path('app_user') }}" class="btn btn-outline-secondary btn-lg">Publier</a>
             <a href="{{ path('app_user') }}" class="btn btn-secondary btn-lg">Retour à la liste</a>
-        </div>
-            {{ form_end(form) }}
         </div>
     </div>
 </div>

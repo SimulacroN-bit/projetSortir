@@ -46,13 +46,20 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
 
         //Participant des utilisateurs lambda
         for ($i = 1; $i < self::NB_PARTICIPANTS; $i++) {
+
+            $prenom = $faker->firstName;
+            $nom = $faker->lastName;
+
+            $pseudo = strtolower($prenom . '.' . $nom) . $i;
+            $mail = strtolower($prenom . '.' . $nom) . $i . '@sortir.com';
+
             $participant = $this->createParticipant(
-                pseudo: $faker->userName,
+                pseudo: $pseudo,
                 plainPassword: 'abc123',
-                nom: $faker->lastName(),
-                prenom: $faker->firstName(),
+                nom: $nom,
+                prenom: $prenom,
                 telephone: '06' . str_pad(rand(10000000, 99999999), 8, '0', STR_PAD_LEFT),
-                mail: $faker->unique()->email(),
+                mail: $mail,
                 administrateur: false,
                 campus: $campus[$i % count($campus)],
             );

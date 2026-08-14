@@ -14,7 +14,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class SortieController extends AbstractController
 {
@@ -90,7 +89,6 @@ final class SortieController extends AbstractController
     }
 
     #[Route('/sortie/create', name: 'app_sortie_create', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
     public function create(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -99,24 +97,15 @@ final class SortieController extends AbstractController
         $user = $this->getUser();
         $sortie = new Sortie();
         $sortie->setOrganisateur($user);
-        $sortie->setCampus($user->getCampus());
         $sortie->setEtat(Etat::EnCreation);
 
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $sortie->setOrganisateur($user);
-            $sortie->setCampus($user->getCampus());
-            $sortie->setEtat(Etat::EnCreation);
             $entityManager->persist($sortie);
             $entityManager->flush();
 
-            if ($request->request->has('publish')) {
-                $sortie->setEtat(Etat::Ouverte);
-                $entityManager->flush();
-            }
-
             return $this->redirectToRoute('app_user');
         }
 
@@ -124,65 +113,7 @@ final class SortieController extends AbstractController
 
         return $this->render('sortie/create.html.twig', [
             'form' => $form,
-            'sortie' => $sortie,
-            'isEdit' => false,
-        ]);
-    }
-
-    #[Route('/sortie/{id}/publish', name: 'app_sortie_publish', methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
-    public function publish(
-        Sortie $sortie,
-        EntityManagerInterface $entityManager
-    ): Response {
-        $user = $this->getUser();
-
-        if ($sortie->getOrganisateur() !== $user) {
-            throw $this->createAccessDeniedException('Seul l\'organisateur peut publier cette sortie.');
-        }
-
-        if ($sortie->getEtat() !== Etat::EnCreation) {
-            throw $this->createAccessDeniedException('Seules les sorties en création peuvent être publiées.');
-        }
-
-        $sortie->setEtat(Etat::Ouverte);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('app_user');
-    }
-
-    #[Route('/sortie/{id}/edit', name: 'app_sortie_edit', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
-    public function edit(
-        Sortie $sortie,
-        Request $request,
-        EntityManagerInterface $entityManager,
-        LieuRepository $lieuRepository
-    ): Response {
-        $user = $this->getUser();
-
-        if ($sortie->getOrganisateur() !== $user) {
-            throw $this->createAccessDeniedException('Seul l\'organisateur peut modifier cette sortie.');
-        }
-
-        if ($sortie->getEtat() !== Etat::EnCreation) {
-            throw $this->createAccessDeniedException('Seules les sorties en création peuvent être modifiées.');
-        }
-
-        $form = $this->createForm(SortieType::class, $sortie);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-            return $this->redirectToRoute('app_user');
-        }
-
-        $lieux = $lieuRepository->findAll();
-
-        return $this->render('sortie/create.html.twig', [
-            'form' => $form,
-            'sortie' => $sortie,
-            'isEdit' => true,
+            'lieux' => $lieux,
         ]);
     }
 

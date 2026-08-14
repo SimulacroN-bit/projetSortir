@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Listener\EtatListener;
 use App\Enum\Etat;
 use App\Repository\SortieRepository;
 use DateTimeImmutable;
@@ -11,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
+#[ORM\EntityListeners([EtatListener::class])]
 class Sortie
 {
     #[ORM\Id]
@@ -55,6 +57,13 @@ class Sortie
 
     #[ORM\Column(enumType: Etat::class)]
     private ?Etat $etat = null;
+
+    //Propriété non mappée : calculée dynamiquement par EtatListener, jamais écrite en base de données
+    private ?Etat $etatAffichage = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: 'Le motif d\'annulation est obligatoire.', groups: ['annulation'])]
+    private ?string $motifAnnulation = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
@@ -172,15 +181,27 @@ class Sortie
         return $this;
     }
 
-    public function getCampus(): ?Campus
+    public function getEtatAffichage(): ?Etat
     {
-        return $this->campus;
+        //Fallback sur $etat pour une Sortie tout juste créée en mémoire
+        //pas encore rechargée depuis la base de données (postLoad ne s'est pas encore déclenché)
+        return $this->etatAffichage ?? $this->etat;
     }
 
-    public function setCampus(?Campus $campus): static
+    public function setEtatAffichage(?Etat $etatAffichage): static
     {
-        $this->campus = $campus;
+        $this->etatAffichage = $etatAffichage;
+        return $this;
+    }
 
+    public function getMotifAnnulation(): ?string
+    {
+        return $this->motifAnnulation;
+    }
+
+    public function setMotifAnnulation(?string $motifAnnulation): static
+    {
+        $this->motifAnnulation = $motifAnnulation;
         return $this;
     }
 
@@ -228,6 +249,18 @@ class Sortie
     public function setOrganisateur(?Participant $organisateur): static
     {
         $this->organisateur = $organisateur;
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): static
+    {
+        $this->campus = $campus;
 
         return $this;
     }

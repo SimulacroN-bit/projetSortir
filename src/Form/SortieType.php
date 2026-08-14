@@ -8,6 +8,7 @@ use App\Entity\Sortie;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -27,7 +28,7 @@ class SortieType extends AbstractType
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
             ])
-            ->add('dateLimiteInscription', DateTimeType::class, [
+            ->add('dateLimiteInscription', DateType::class, [
                 'label' => 'Date limite d\'inscription',
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
@@ -56,7 +57,7 @@ class SortieType extends AbstractType
                 'choice_attr' => function(Lieu $lieu){
                     return [
                         'data-rue' => $lieu->getRue(),
-                        'data-code_postal' => $lieu->getVille()?->getCodePostal(),
+                        'data-code-postal' => $lieu->getVille()?->getCodePostal(),
                         'data-latitude' => $lieu->getLatitude(),
                         'data-longitude' => $lieu->getLongitude(),
                     ];
