@@ -139,12 +139,18 @@
                         {% endif %}
                    {% endif %}
 
-                    {# Bloc inscription #}
+                    {# Bloc inscription/désinscription #}
                     {% if app.user and sortie.etatAffichage.value == 'Ouverte' %}
                         {% if sortie.participants.contains(app.user) %}
-                            <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">Se désister</a>
+                            <form method="post" action="{{ path('app_sortie_unregistrer', {'id': sortie.id}) }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('unregister-sortie-' ~ sortie.id) }}">
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Se désister</button>
+                            </form>
                         {% else %}
-                            <a href="{{ path('app_sortie_detail', {'id': sortie.id}) }}" class="btn btn-sm btn-outline-primary">S'inscrire</a>
+                            <form method="post" action="{{ path('app_sortie_register', {'id': sortie.id}) }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('register-sortie-' ~ sortie.id) }}">
+                                <button type="submit" class="btn btn-sm btn-outline-primary">S'inscrire</button>
+                            </form>
                         {% endif %}
                     {% endif %}
                 </td>
