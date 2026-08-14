@@ -5,7 +5,6 @@ namespace App\Entity\Listener;
 use App\Entity\Sortie;
 use App\Enum\Etat;
 use DateTimeImmutable;
-use Doctrine\ORM\Event\PostLoadEventArgs;
 
 class EtatListener
 {
