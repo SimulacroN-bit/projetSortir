@@ -38,7 +38,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
 
         //Récupère les participants déjà créées et liés à un vrai  dans ParticipantFixtures
         $participants = [];
-        for ($i = 1; $i <ParticipantFixtures::NB_PARTICIPANTS; $i++) {
+        for ($i = 1; $i <= ParticipantFixtures::NB_PARTICIPANTS; $i++) {
             $participants[] = $this->getReference(ParticipantFixtures::PARTICIPANT_REFERENCE . $i,
                 Participant::class
             );
@@ -48,7 +48,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
         );
 
         $activites = ['Randonnée', 'Cinéma', 'Restaurant', 'Musée', 'Picnic', 'Sport', 'Bowling', 'Concert'];
-        $states = [Etat::Ouverte, Etat::Cloturee, Etat::EnCours, Etat::Annulee, Etat::Terminee, Etat::EnCreation];
+        $states = [Etat::EnCreation, Etat::Ouverte, Etat::Annulee];
 
 
         //création des fixtures de sortie
@@ -62,6 +62,7 @@ class SortieFixtures extends Fixture implements DependentFixtureInterface
             $sortie->setNbInscriptionMax(rand(5, 30));
             $sortie->setInfosSortie($faker->sentence());
             $sortie->setEtat($states[$i % count($states)]);
+            $sortie->setMotifAnnulation($faker->sentence());
             $sortie->setLieu($lieux[$i % count($lieux)]);
             $sortie->setCampus($campus[$i % count($campus)]);
             $sortie->setOrganisateur($participants[0]);

@@ -45,7 +45,7 @@ class ParticipantFixtures extends Fixture implements DependentFixtureInterface
         $this->addReference(self::PARTICIPANT_ADMIN_REFERENCE, $participantAdmin);
 
         //Participant des utilisateurs lambda
-        for ($i = 1; $i < self::NB_PARTICIPANTS; $i++) {
+        for ($i = 1; $i <= self::NB_PARTICIPANTS; $i++) {
 
             $prenom = $faker->firstName;
             $nom = $faker->lastName;

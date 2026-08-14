@@ -9,6 +9,7 @@ use App\Form\AnnulationType;
 use App\Form\SortieType;
 use App\Repository\CampusRepository;
 use App\Repository\SortieRepository;
+use App\Security\Voter\SortieVoter;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -148,22 +149,11 @@ final class SortieController extends AbstractController
         EntityManagerInterface $em
     ): Response
     {
-        /** @var Participant|null $participant */
-        $participant = $this->getUser();
-
-        //vérifier si l'utilisateur est bien connecté
-        if (!$participant instanceof Participant) {
-            throw $this->createAccessDeniedException('Vous devez être connecté');
+        if ($sortie->getEtatAffichage() === Etat::Historisee) {
+            throw  $this->createNotFoundException('Cette sortie ne peut plus être modifiée.');
         }
 
-        //seul l'organisateur peut modifier la sortie et seulement tant que la sortie n'est pas publiée
-        if ($sortie->getOrganisateur() !== $participant) {
-            throw $this->createAccessDeniedException('Vous n\'êtes pas l\'organisateur de cette sortie.');
-        }
-        if ($sortie->getEtatAffichage() !== Etat::EnCreation) {
-            $this->addFlash('error', 'Cette sortie n\'est plus modifiable.');
-            return $this->redirectToRoute('app_sortie_detail', ['id' => $sortie->getId()]);
-        }
+        $this->denyAccessUnlessGranted(SortieVoter::UPDATE, $sortie);
 
         //le formulaire associé à l'entité vide
         $sortieForm = $this->createForm(SortieType::class, $sortie);
@@ -191,6 +181,23 @@ final class SortieController extends AbstractController
         ]);
     }
 
+    #[Route('/sortie/{id}/publish', name: 'app_sortie_publish', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function publish(
+        Sortie $sortie,
+        Request $request,
+        EntityManagerInterface $em,
+    ): Response {
+        $this->denyAccessUnlessGranted(SortieVoter::UPDATE, $sortie);
+
+        if ($this->isCsrfTokenValid('publish-sortie-' . $sortie->getId(), $request->request->get('_token'))) {
+            $sortie->setEtat(Etat::Ouverte);
+            $em->flush();
+            $this->addFlash('success', 'Sortie publiée avec succès.');
+        }
+
+        return $this->redirectToRoute('app_user');
+    }
+
     #[Route('/sortie/{id}/delete', name: 'app_sortie_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function delete(
         Sortie                 $sortie,
@@ -198,22 +205,7 @@ final class SortieController extends AbstractController
         EntityManagerInterface $em,
     ): Response
     {
-        /** @var Participant|null $participant */
-        $participant = $this->getUser();
-
-        //vérifier si 'utilisateur est bien connecté
-        if (!$participant instanceof Participant) {
-            throw $this->createAccessDeniedException('Vous devez être connecté');
-        }
-
-        //seul l'organisateur peut modifier la sortie et seulement tant que la sortie n'est pas publiée
-        if ($sortie->getOrganisateur() !== $participant) {
-            throw $this->createAccessDeniedException('Vous n\'êtes pas l\'organisateur de cette sortie.');
-        }
-        if ($sortie->getEtatAffichage() !== Etat::EnCreation) {
-            $this->addFlash('error', 'Cette sortie ne peut plus être supprimée.');
-            return $this->redirectToRoute('app_sortie_detail', ['id' => $sortie->getId()]);
-        }
+        $this->denyAccessUnlessGranted(SortieVoter::UPDATE, $sortie);
 
         if ($this->isCsrfTokenValid('delete-sortie-' . $sortie->getId(), $request->request->get('_token'))) {
             $em->remove($sortie);
@@ -221,10 +213,10 @@ final class SortieController extends AbstractController
             $this->addFlash('success', 'Sortie supprimée.');
         }
 
-        return $this->redirectToRoute('app_sortie');
+        return $this->redirectToRoute('app_user');
     }
 
-    #[Route('//sortie/{id}/cancel', name: 'app_sortie_cancel', requirements: ['id' => '\d+'], methods: ['GET',
+    #[Route('/sortie/{id}/cancel', name: 'app_sortie_cancel', requirements: ['id' => '\d+'], methods: ['GET',
    'POST'])]
     public function cancel(
         Sortie                 $sortie,
@@ -232,30 +224,17 @@ final class SortieController extends AbstractController
         EntityManagerInterface $em
     ): Response
     {
-        /** @var Participant|null $participant*/
-        $participant = $this->getUser();
-
-        //vérifier si 'utilisateur est bien connecté
-        if (!$participant instanceof Participant) {
-            throw $this->createAccessDeniedException('Vous devez être connecté');
+        if ($sortie->getEtatAffichage() === Etat::Historisee) {
+            throw  $this->createNotFoundException('Cette sortie ne peut plus être annulée.');
         }
 
-        //seul l'organisateur peut modifier la sortie et seulement tant que la sortie n'est pas publiée
-        if ($sortie->getOrganisateur() !== $participant) {
-            throw $this->createAccessDeniedException('Vous n\'êtes pas l\'organisateur de cette sortie.');
-        }
-
-        //annulation possible seulement si la sortie a déjà été publiée, mais n'a pas encore commencé
-        if (!in_array($sortie->getEtatAffichage(), [Etat::Ouverte, Etat::Cloturee], true)) {
-            $this->addFlash('error', 'Cette sortie ne peut pas être annulée.');
-            return $this->redirectToRoute('app_user');
-        }
+        $this->denyAccessUnlessGranted(SortieVoter::CANCEL, $sortie);
 
         $annulationForm = $this->createForm(AnnulationType::class, $sortie);
         $annulationForm->handleRequest($request);
 
         if ($annulationForm->isSubmitted() && $annulationForm->isValid()) {
-            $sortie->setEtatAffichage(Etat::Annulee);
+            $sortie->setEtat(Etat::Annulee);
             $em->flush();
 
             $this->addFlash('success', 'Sortie annulée.');
