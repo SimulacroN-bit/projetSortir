@@ -11,6 +11,7 @@ use App\Repository\CampusRepository;
 use App\Repository\SortieRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -190,6 +191,55 @@ final class SortieController extends AbstractController
             'sortie' => $sortie,
         ]);
     }
+
+    #[Route('/sortie/{id}/unregistrer', name: 'app_sortie_unregistrer', requirements : ['id' => '\d+'], methods: ['POST'])]
+    public function unregistrer(
+        Sortie $sortie,
+        Request $request,
+        EntityManagerInterface $em,
+    ): Response
+    {
+        $participant = $this->getUser();
+
+        //vérifier si 'utilisateur est bien connecté
+        if (!$participant instanceof Participant) {
+            throw $this->createAccessDeniedException('Vous devez être connecté.');
+        }
+
+        if ($this->isCsrfTokenValid('unregister-sortie-' . $sortie->getId(), $request->request->get('_token'))) {
+            $sortie->removeParticipant($participant);
+            $em->flush();
+
+            $this->addFlash('success', 'Désinscrit de la sortie.');
+        }
+
+        return $this->redirectToRoute('app_user');
+    }
+
+    #[Route('/sortie/{id}/register', name: 'app_sortie_register', requirements : ['id' => '\d+'], methods: ['POST'])]
+    public function registrer(
+        Sortie $sortie,
+        Request $request,
+        EntityManagerInterface $em,
+    ): Response
+    {
+        $participant = $this->getUser();
+
+        //vérifier si 'utilisateur est bien connecté
+        if (!$participant instanceof Participant) {
+            throw $this->createAccessDeniedException('Vous devez être connecté.');
+        }
+
+        if ($this->isCsrfTokenValid('register-sortie-' . $sortie->getId(), $request->request->get('_token'))) {
+            $sortie->addParticipant($participant);
+            $em->flush();
+
+            $this->addFlash('success', 'Inscrit de la sortie.');
+        }
+
+        return $this->redirectToRoute('app_user');
+    }
+
 
     #[Route('/sortie/{id}/delete', name: 'app_sortie_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function delete(
